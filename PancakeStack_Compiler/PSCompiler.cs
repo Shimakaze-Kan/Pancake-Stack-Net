@@ -16,7 +16,7 @@ namespace PancakeStack_Compiler
         private static LocalBuilder swapPancakeStack;
         private readonly static Stack<System.Reflection.Emit.Label> bracketStack = new Stack<System.Reflection.Emit.Label>();
 
-        public static void Compile(string assemblyName, string outputFileName, string[] sourceCode)
+        public static void Compile(string assemblyName, string outputFileName, string[] sourceCode, bool compilerFlag)
         {
             var asm = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName(assemblyName), AssemblyBuilderAccess.Save);
             var module = asm.DefineDynamicModule(assemblyName, outputFileName);
@@ -131,6 +131,12 @@ namespace PancakeStack_Compiler
                     //case "Eat all of the pancakes!":
                     //    return;
                 }
+            }
+
+            if(compilerFlag)
+            {
+                ilGen.Emit(OpCodes.Call, typeof(Console).GetMethod("ReadLine", BindingFlags.Public | BindingFlags.Static));
+                ilGen.Emit(OpCodes.Pop);
             }
 
             ilGen.Emit(OpCodes.Ret);

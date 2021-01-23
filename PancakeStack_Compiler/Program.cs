@@ -13,12 +13,17 @@ namespace PancakeStack_Compiler
         {
             string sourceFileName = args[0];
             string outputFileName = args[1];
+            bool compilerFlag = false;
+            if(args.Length == 3 && args[2] == "-wait")
+            {
+                compilerFlag = true;
+            }
 
             var sourceCode = File.ReadAllLines(sourceFileName);
 
             //sourceCode = sourceCode.Select(item => item.Trim());
 
-            PSCompiler.Compile(outputFileName, outputFileName + ".exe", sourceCode);
+            PSCompiler.Compile(outputFileName, outputFileName + ".exe", sourceCode, compilerFlag);
             Console.WriteLine($"File: {sourceFileName} successfully compiled to {outputFileName}.exe");
         }
     }
