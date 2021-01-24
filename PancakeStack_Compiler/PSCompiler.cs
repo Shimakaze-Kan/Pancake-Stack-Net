@@ -14,7 +14,7 @@ namespace PancakeStack_Compiler
         private static LocalBuilder accumulator1;
         private static LocalBuilder accumulator2;
         private static LocalBuilder swapPancakeStack;
-        private readonly static Stack<System.Reflection.Emit.Label> bracketStack = new Stack<System.Reflection.Emit.Label>();
+        private static Dictionary<string, Label> labelDictionary = new Dictionary<string, Label>();
 
         public static void Compile(string assemblyName, string outputFileName, string[] sourceCode, bool compilerFlag)
         {
@@ -37,7 +37,8 @@ namespace PancakeStack_Compiler
             accumulator1 = ilGen.DeclareLocal(typeof(Int32));
             accumulator2 = ilGen.DeclareLocal(typeof(Int32));
             swapPancakeStack = ilGen.DeclareLocal(typeof(Stack<int>));
-            //GenerateFlipThePancakesOnTopInstruction(ilGen, pancakeStackField);
+
+
             for (int i = 0; i < sourceCode.Length; i++)
             {
                 switch (sourceCode[i])
@@ -82,34 +83,20 @@ namespace PancakeStack_Compiler
                         }
                     case var label when new Regex(@"\[(.*)\]").IsMatch(label):
                         {
-                            //TODO
-                            //var match = Regex.Match(label, @"\[(.*)\]");
-                            //if (Labels.Any(item => item.Key == match.Groups[1].Value))
-                            //{
-                            //    break;
-                            //}
-
-                            //Labels[match.Groups[1].Value] = PancakeStack.Peek() - 1; //Pancake stack language start counting lines from 1
+                            var match = Regex.Match(label, @"\[(.*)\]");
+                            GenerateLabelInstruction(ilGen, match.Groups[1].Value);
                             break;
                         }
-                    case var label when new Regex(@"If the pancake isn't tasty, go over to (.*).").IsMatch(label):
-                        {
-                            //TODO
-                            //var match = Regex.Match(label, @"If the pancake isn't tasty, go over to (.*).");
-                            //if (PancakeStack.Peek() == 0)
-                            //{
-                            //    i = Labels[match.Groups[1].Value];
-                            //}
+                    case var label when new Regex("If the pancake isn't tasty, go over to \"(.*)\".").IsMatch(label):
+                        {                            
+                            var match = Regex.Match(label, "If the pancake isn't tasty, go over to \"(.*)\".");
+                            GenerateIfThePancakeIsntTastyGoOverToInstruction(ilGen, pancakeStackField, match.Groups[1].Value);
                             break;
                         }
-                    case var label when new Regex(@"If the pancake is tasty, go over to (.*).").IsMatch(label):
+                    case var label when new Regex("If the pancake is tasty, go over to \"(.*)\".").IsMatch(label):
                         {
-                            //TODO
-                            //var match = Regex.Match(label, @"If the pancake is tasty, go over to (.*).");
-                            //if (PancakeStack.Peek() != 0)
-                            //{
-                            //    i = Labels[match.Groups[1].Value];
-                            //}
+                            var match = Regex.Match(label, "If the pancake is tasty, go over to \"(.*)\".");
+                            GenerateIfThePancakeIsTastyGoOverToInstruction(ilGen, pancakeStackField, match.Groups[1].Value);
                             break;
                         }
                     case "Put syrup on the pancakes!":
@@ -128,10 +115,11 @@ namespace PancakeStack_Compiler
                             GenerateTakeOffTheButterInstruction(ilGen, pancakeStackField);
                             break;
                         }
-                    //case "Eat all of the pancakes!":
-                    //    return;
+                    case "Eat all of the pancakes!":
+                        goto end_of_compile_loop; //Probably the only situation where goto is a good practice
                 }
             }
+            end_of_compile_loop:
 
             if(compilerFlag)
             {
@@ -254,9 +242,10 @@ namespace PancakeStack_Compiler
             ilGen.Emit(OpCodes.Nop);
         }
 
-        private static void GenerateLabelInstruction(ILGenerator ilGen)
+        private static void GenerateLabelInstruction(ILGenerator ilGen, string labelName)
         {
-
+            labelDictionary[labelName] = ilGen.DefineLabel();
+            ilGen.MarkLabel(labelDictionary[labelName]);
         }
 
         private static void GeneratePutSyrupOnThePancakesInstruction(ILGenerator ilGen, FieldInfo pancakeStack)
@@ -343,6 +332,30 @@ namespace PancakeStack_Compiler
             ilGen.Emit(OpCodes.Ldc_I4_1);
             ilGen.Emit(OpCodes.Sub);
             ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("Push"));
+        }
+
+        private static void GenerateIfThePancakeIsntTastyGoOverToInstruction(ILGenerator ilGen, FieldInfo pancakeStack, string labelName)
+        {
+            var endLabel = ilGen.DefineLabel();
+            ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
+            ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("Peek"));
+            ilGen.Emit(OpCodes.Ldc_I4_0);
+            ilGen.Emit(OpCodes.Ceq);
+            ilGen.Emit(OpCodes.Brfalse, endLabel);
+            ilGen.Emit(OpCodes.Br, labelDictionary[labelName]);
+            ilGen.MarkLabel(endLabel);
+        }
+
+        private static void GenerateIfThePancakeIsTastyGoOverToInstruction(ILGenerator ilGen, FieldInfo pancakeStack, string labelName)
+        {
+            var endLabel = ilGen.DefineLabel();
+            ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
+            ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("Peek"));
+            ilGen.Emit(OpCodes.Ldc_I4_0);
+            ilGen.Emit(OpCodes.Cgt);
+            ilGen.Emit(OpCodes.Brfalse, endLabel);
+            ilGen.Emit(OpCodes.Br, labelDictionary[labelName]);
+            ilGen.MarkLabel(endLabel);
         }
     }
 }
