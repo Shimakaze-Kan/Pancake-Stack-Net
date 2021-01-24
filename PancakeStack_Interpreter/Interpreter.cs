@@ -63,8 +63,8 @@ namespace PancakeStack_Interpreter
                         {
                             var firstTopItem = PancakeStack.Pop();
                             var secondTopItem = PancakeStack.Pop();
-                            PancakeStack.Push(secondTopItem);
                             PancakeStack.Push(firstTopItem);
+                            PancakeStack.Push(secondTopItem);
                             break;
                         }
                     case "Put another pancake on top!":
