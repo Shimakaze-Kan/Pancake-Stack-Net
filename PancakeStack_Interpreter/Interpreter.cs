@@ -56,7 +56,7 @@ namespace PancakeStack_Interpreter
                         {
                             var firstTopItem = PancakeStack.Pop();
                             var secondTopItem = PancakeStack.Pop();
-                            PancakeStack.Push(secondTopItem - firstTopItem);
+                            PancakeStack.Push(firstTopItem - secondTopItem);
                             break;
                         }
                     case "Flip the pancakes on top!":

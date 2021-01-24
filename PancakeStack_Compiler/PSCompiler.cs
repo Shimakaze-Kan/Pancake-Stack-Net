@@ -11,9 +11,9 @@ namespace PancakeStack_Compiler
 {
     public static class PSCompiler
     {
-        private static LocalBuilder accumulator1;
-        private static LocalBuilder accumulator2;
-        private static LocalBuilder swapPancakeStack;
+        private static FieldBuilder accumulator1;
+        private static FieldBuilder accumulator2;
+        private static FieldBuilder swapPancakeStack;
         private static Dictionary<string, Label> labelDictionary = new Dictionary<string, Label>();
 
         public static void Compile(string assemblyName, string outputFileName, string[] sourceCode, bool compilerFlag)
@@ -24,7 +24,10 @@ namespace PancakeStack_Compiler
             var mainClassTypeName = assemblyName + ".PSProgram";
             var type = module.DefineType(mainClassTypeName, TypeAttributes.Class | TypeAttributes.Sealed | TypeAttributes.Abstract | TypeAttributes.Public); //cheat to make it static
 
-            //var pointerField = type.DefineField("pointer", typeof(Int16), FieldAttributes.Static | FieldAttributes.Private);
+            accumulator1 = type.DefineField("accumulator1", typeof(int), FieldAttributes.Static | FieldAttributes.Private);
+            accumulator2 = type.DefineField("accumulator2", typeof(int), FieldAttributes.Static | FieldAttributes.Private);
+            swapPancakeStack = type.DefineField("swapPancakeStack", typeof(Stack<int>), FieldAttributes.Static | FieldAttributes.Private);
+
             var pancakeStackField = type.DefineField("pancakeStack", typeof(Stack<int>), FieldAttributes.Static | FieldAttributes.Private);
             var constructor = type.DefineConstructor(MethodAttributes.Static, CallingConventions.Standard, null); //static constructor parameterless
 
@@ -34,9 +37,8 @@ namespace PancakeStack_Compiler
             var mainMethod = type.DefineMethod("Execute", MethodAttributes.Public | MethodAttributes.Static);
             var ilGen = mainMethod.GetILGenerator();
 
-            accumulator1 = ilGen.DeclareLocal(typeof(Int32));
-            accumulator2 = ilGen.DeclareLocal(typeof(Int32));
-            swapPancakeStack = ilGen.DeclareLocal(typeof(Stack<int>));
+            //var testMethod = type.DefineMethod("Test", MethodAttributes.Public | MethodAttributes.Static);
+            //var ilGenTest = testMethod.GetILGenerator();
 
 
             for (int i = 0; i < sourceCode.Length; i++)
@@ -197,10 +199,9 @@ namespace PancakeStack_Compiler
             ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
             ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
             ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("Pop"));
-            ilGen.Emit(OpCodes.Neg);
             ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
             ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("Pop"));
-            ilGen.Emit(OpCodes.Add);
+            ilGen.Emit(OpCodes.Sub);
             ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("Push"));
         }
 
@@ -208,19 +209,19 @@ namespace PancakeStack_Compiler
         {
             ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
             ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("Pop"));
-            ilGen.Emit(OpCodes.Stloc, accumulator1);
+            ilGen.Emit(OpCodes.Stsfld, accumulator1);
 
             ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
             ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("Pop"));
-            ilGen.Emit(OpCodes.Stloc, accumulator2);
+            ilGen.Emit(OpCodes.Stsfld, accumulator2);
 
             ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
-            ilGen.Emit(OpCodes.Ldloc, accumulator1);
+            ilGen.Emit(OpCodes.Ldsfld, accumulator1);
             ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("Push"));
             ilGen.Emit(OpCodes.Nop);
 
             ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
-            ilGen.Emit(OpCodes.Ldloc, accumulator2);
+            ilGen.Emit(OpCodes.Ldsfld, accumulator2);
             ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("Push"));
             ilGen.Emit(OpCodes.Nop);
         }
@@ -229,15 +230,15 @@ namespace PancakeStack_Compiler
         {
             ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
             ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("Pop"));
-            ilGen.Emit(OpCodes.Stloc, accumulator1);
+            ilGen.Emit(OpCodes.Stsfld, accumulator1);
 
             ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
-            ilGen.Emit(OpCodes.Ldloc, accumulator1);
+            ilGen.Emit(OpCodes.Ldsfld, accumulator1);
             ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("Push"));
             ilGen.Emit(OpCodes.Nop);
 
             ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
-            ilGen.Emit(OpCodes.Ldloc, accumulator1);
+            ilGen.Emit(OpCodes.Ldsfld, accumulator1);
             ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("Push"));
             ilGen.Emit(OpCodes.Nop);
         }
@@ -251,7 +252,7 @@ namespace PancakeStack_Compiler
         private static void GeneratePutSyrupOnThePancakesInstruction(ILGenerator ilGen, FieldInfo pancakeStack)
         {
             ilGen.Emit(OpCodes.Newobj, typeof(Stack<int>).GetConstructor(Type.EmptyTypes)); //temporary stack
-            ilGen.Emit(OpCodes.Stloc, swapPancakeStack);
+            ilGen.Emit(OpCodes.Stsfld, swapPancakeStack);
 
             var loopConditionsLabel = ilGen.DefineLabel();
             var loopStartLabel = ilGen.DefineLabel();
@@ -259,7 +260,7 @@ namespace PancakeStack_Compiler
             ilGen.Emit(OpCodes.Br_S, loopConditionsLabel);
 
             ilGen.MarkLabel(loopStartLabel);
-            ilGen.Emit(OpCodes.Ldloc, swapPancakeStack);
+            ilGen.Emit(OpCodes.Ldsfld, swapPancakeStack);
             ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
             ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("Pop"));
 
@@ -272,11 +273,11 @@ namespace PancakeStack_Compiler
             ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("get_Count"));
             ilGen.Emit(OpCodes.Ldc_I4_0);
             ilGen.Emit(OpCodes.Cgt);
-            ilGen.Emit(OpCodes.Stloc, accumulator1);
-            ilGen.Emit(OpCodes.Ldloc, accumulator1);
+            ilGen.Emit(OpCodes.Stsfld, accumulator1);
+            ilGen.Emit(OpCodes.Ldsfld, accumulator1);
             ilGen.Emit(OpCodes.Brtrue_S, loopStartLabel);           
 
-            ilGen.Emit(OpCodes.Ldloc, swapPancakeStack);
+            ilGen.Emit(OpCodes.Ldsfld, swapPancakeStack);
             ilGen.Emit(OpCodes.Stsfld, pancakeStack);
         }
 
@@ -294,7 +295,7 @@ namespace PancakeStack_Compiler
         private static void GenerateTakeOffTheSyrupInstruction(ILGenerator ilGen, FieldInfo pancakeStack)
         {
             ilGen.Emit(OpCodes.Newobj, typeof(Stack<int>).GetConstructor(Type.EmptyTypes)); //temporary stack
-            ilGen.Emit(OpCodes.Stloc, swapPancakeStack);
+            ilGen.Emit(OpCodes.Stsfld, swapPancakeStack);
 
             var loopConditionsLabel = ilGen.DefineLabel();
             var loopStartLabel = ilGen.DefineLabel();
@@ -302,7 +303,7 @@ namespace PancakeStack_Compiler
             ilGen.Emit(OpCodes.Br_S, loopConditionsLabel);
 
             ilGen.MarkLabel(loopStartLabel);
-            ilGen.Emit(OpCodes.Ldloc, swapPancakeStack);
+            ilGen.Emit(OpCodes.Ldsfld, swapPancakeStack);
             ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
             ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("Pop"));
 
@@ -315,11 +316,11 @@ namespace PancakeStack_Compiler
             ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("get_Count"));
             ilGen.Emit(OpCodes.Ldc_I4_0);
             ilGen.Emit(OpCodes.Cgt);
-            ilGen.Emit(OpCodes.Stloc, accumulator1);
-            ilGen.Emit(OpCodes.Ldloc, accumulator1);
+            ilGen.Emit(OpCodes.Stsfld, accumulator1);
+            ilGen.Emit(OpCodes.Ldsfld, accumulator1);
             ilGen.Emit(OpCodes.Brtrue_S, loopStartLabel);
 
-            ilGen.Emit(OpCodes.Ldloc, swapPancakeStack);
+            ilGen.Emit(OpCodes.Ldsfld, swapPancakeStack);
             ilGen.Emit(OpCodes.Stsfld, pancakeStack);
         }
 
