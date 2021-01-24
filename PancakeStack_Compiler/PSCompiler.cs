@@ -227,12 +227,12 @@ namespace PancakeStack_Compiler
             ilGen.Emit(OpCodes.Stloc, accumulator2);
 
             ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
-            ilGen.Emit(OpCodes.Ldloc, accumulator2);
+            ilGen.Emit(OpCodes.Ldloc, accumulator1);
             ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("Push"));
             ilGen.Emit(OpCodes.Nop);
 
             ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
-            ilGen.Emit(OpCodes.Ldloc, accumulator1);
+            ilGen.Emit(OpCodes.Ldloc, accumulator2);
             ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("Push"));
             ilGen.Emit(OpCodes.Nop);
         }
