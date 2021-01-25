@@ -4,82 +4,24 @@
     {
         static void Main(string[] args)
         {
-            var interpreter = new Interpreter(@"Put this remarkable pancake on top!
+            var interpreter = new Interpreter(@"Put this old pancake on top!
 Put another pancake on top!
-Put the top pancakes together!
-Put another pancake on top!
-Put the top pancakes together!
-Put another pancake on top!
-Put the top pancakes together!
-Put butter on the pancakes!
-Put butter on the pancakes!
-Put butter on the pancakes!
-Show me a pancake!
-Put this incredible pancake on top!
-Put another pancake on top!
-Put the top pancakes together!
-Put the top pancakes together!
-Put butter on the pancakes!
-Show me a pancake!
-Put butter on the pancakes!
-Show me a pancake!
-Put this nice pancake on top!
-Put the top pancakes together!
-Show me a pancake!
-Put another pancake on top!
-Put this one pancake on top!
-Put another pancake on top!
-Put the top pancakes together!
-Put another pancake on top!
-Put the top pancakes together!
 Take from the top pancakes!
-Show me a pancake!
-Flip the pancakes on top!
+Put this 12345678 pancake on top!
+[JUMP]
+Eat the pancake on top!
+Give me a pancake!
+Put another pancake on top!
 Take off the butter!
-Take off the butter!
-Show me a pancake!
+If the pancake is tasty, go over to ""JUMP"".
+Put this 12345678911234 pancake on top!
+[ADD]
+Eat the pancake on top!
+Put the top pancakes together!
 Flip the pancakes on top!
-Show me a pancake!
+If the pancake is tasty, go over to ""ADD"".
 Flip the pancakes on top!
-Put this amazing pancake on top!
-Put another pancake on top!
-Put the top pancakes together!
-Put the top pancakes together!
-Put butter on the pancakes!
-Show me a pancake!
-Flip the pancakes on top!
-Put butter on the pancakes!
-Put butter on the pancakes!
-Put butter on the pancakes!
-Put butter on the pancakes!
-Show me a pancake!
-Take from the top pancakes!
-Put another pancake on top!
-Put another pancake on top!
-Put the top pancakes together!
-Put butter on the pancakes!
-Put butter on the pancakes!
-Put butter on the pancakes!
-Show me a pancake!
-Put the top pancakes together!
-Put this shimakaze pancake on top!
-Put the top pancakes together!
-Show me a pancake!
-Put this terrific pancake on top!
-Put another pancake on top!
-Put another pancake on top!
-Put the top pancakes together!
-Put the top pancakes together!
-Put the top pancakes together!
-Take off the butter!
-Take off the butter!
-Show me a pancake!
-Put this ending pancake on top!
-Put another pancake on top!
-Put the top pancakes together!
-Put the top pancakes together!
-Put butter on the pancakes!
-Show me a pancake!
+Show me a numeric pancake!
 Eat all of the pancakes!");
 
             interpreter.Execute();
