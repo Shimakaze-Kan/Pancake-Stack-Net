@@ -44,7 +44,7 @@ namespace PancakeStack_Interpreter
                             break;
                         }
                     case "Give me a pancake!":
-                        PancakeStack.Push(Convert.ToInt32(Console.Read()));
+                        PancakeStack.Push(Convert.ToInt32(Console.ReadLine()));
                         break;
                     case "How about a hotcake?":
                         PancakeStack.Push(Console.Read());
@@ -82,21 +82,21 @@ namespace PancakeStack_Interpreter
                                 break;
                             }
 
-                            Labels[match.Groups[1].Value] = PancakeStack.Peek() - 1; //Pancake stack language start counting lines from 1
+                            Labels[match.Groups[1].Value] = PancakeStack.Peek() - 2; //Pancake stack language start counting lines from 1
                             break;
                         }
-                    case var label when new Regex(@"If the pancake isn't tasty, go over to (.*).").IsMatch(label):
+                    case var label when new Regex(@"If the pancake isn't tasty, go over to ""(.*)"".").IsMatch(label):
                         {
-                            var match = Regex.Match(label, @"If the pancake isn't tasty, go over to (.*).");
+                            var match = Regex.Match(label, @"If the pancake isn't tasty, go over to ""(.*)"".");
                             if(PancakeStack.Peek() == 0)
                             {
                                 i = Labels[match.Groups[1].Value];
                             }
                             break;
                         }
-                    case var label when new Regex(@"If the pancake is tasty, go over to (.*).").IsMatch(label):
+                    case var label when new Regex(@"If the pancake is tasty, go over to ""(.*)"".").IsMatch(label):
                         {
-                            var match = Regex.Match(label, @"If the pancake is tasty, go over to (.*).");
+                            var match = Regex.Match(label, @"If the pancake is tasty, go over to ""(.*)"".");
                             if(PancakeStack.Peek() != 0)
                             {
                                 i = Labels[match.Groups[1].Value];
@@ -121,6 +121,9 @@ namespace PancakeStack_Interpreter
                             PancakeStack.Push(topItem - 1);
                             break;
                         }
+                    case "Show me a numeric pancake!":
+                        Console.Write(PancakeStack.Peek());
+                        break;
                     case "Eat all of the pancakes!":
                         return;
                 }
