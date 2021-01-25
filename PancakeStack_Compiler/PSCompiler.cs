@@ -593,7 +593,9 @@ namespace PancakeStack_Compiler
             ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
             ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("Peek"));
             ilGen.Emit(OpCodes.Ldc_I4_0);
-            ilGen.Emit(OpCodes.Cgt);
+            ilGen.Emit(OpCodes.Ceq);
+            ilGen.Emit(OpCodes.Ldc_I4_0);
+            ilGen.Emit(OpCodes.Ceq);
             ilGen.Emit(OpCodes.Brfalse, endLabel);
 
             ilGen.Emit(OpCodes.Ldsfld, labelDictionary);
