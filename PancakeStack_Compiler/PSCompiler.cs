@@ -20,8 +20,10 @@ namespace PancakeStack_Compiler
         //private static Dictionary<string, Label> labelDictionary = new Dictionary<string, Label>();
         private static Dictionary<string, MethodBuilder> methodDictionary = new Dictionary<string, MethodBuilder>();
 
-        public static void Compile(string assemblyName, string outputFileName, string[] sourceCode, bool compilerFlag)
+        public static void Compile(string assemblyName, string outputFileName, string[] sourceCode, List<string> compilerFlags)
         {
+            bool noNewLine = compilerFlags.Any(item => item == "-nonewline");
+
             var asm = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName(assemblyName), AssemblyBuilderAccess.Save);
             var module = asm.DefineDynamicModule(assemblyName, outputFileName);
 
@@ -103,7 +105,7 @@ namespace PancakeStack_Compiler
                     case "How about a hotcake?":
                         if (!methodDictionary.TryGetValue("HowAboutAHotcake", out method))
                         {
-                            GenerateHowAboutAHotcakeMethod(pancakeStackField, type);
+                            GenerateHowAboutAHotcakeMethod(pancakeStackField, noNewLine, type);
                             method = methodDictionary["HowAboutAHotcake"];
                         }
                         break;
@@ -241,9 +243,9 @@ namespace PancakeStack_Compiler
             ilGen.Emit(OpCodes.Clt);
             ilGen.Emit(OpCodes.Brtrue, startLoopLabel);
 
-            if (compilerFlag)
+            if (compilerFlags.Any(item => item == "-wait"))
             {
-                ilGen.Emit(OpCodes.Call, typeof(Console).GetMethod("ReadLine", BindingFlags.Public | BindingFlags.Static));
+                ilGen.Emit(OpCodes.Call, typeof(Console).GetMethod("ReadLine"));
                 ilGen.Emit(OpCodes.Pop);
             }
 
@@ -328,16 +330,47 @@ namespace PancakeStack_Compiler
             ilGen.Emit(OpCodes.Ret);
         }
 
-        private static void GenerateHowAboutAHotcakeMethod(FieldInfo pancakeStack, TypeBuilder type)
+        private static void GenerateHowAboutAHotcakeMethod(FieldInfo pancakeStack, bool noNewLine, TypeBuilder type)
         {
             var method = type.DefineMethod("HowAboutAHotcake", MethodAttributes.Public | MethodAttributes.Static);
             methodDictionary["HowAboutAHotcake"] = method;
 
             var ilGen = method.GetILGenerator();
 
-            ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
-            ilGen.Emit(OpCodes.Call, typeof(Console).GetMethod("Read", BindingFlags.Public | BindingFlags.Static));            
-            ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("Push"));
+            if (noNewLine)
+            {
+                var startLabel = ilGen.DefineLabel();
+                var firstConditionLabel = ilGen.DefineLabel();
+                var secondConditionLabel = ilGen.DefineLabel();
+
+                ilGen.MarkLabel(startLabel);
+                ilGen.Emit(OpCodes.Call, typeof(Console).GetMethod("Read"));
+                ilGen.Emit(OpCodes.Stsfld, accumulator1);
+                ilGen.Emit(OpCodes.Ldsfld, accumulator1);
+                ilGen.Emit(OpCodes.Ldc_I4_S, 10);
+                ilGen.Emit(OpCodes.Beq, firstConditionLabel);
+
+                ilGen.Emit(OpCodes.Ldsfld, accumulator1);
+                ilGen.Emit(OpCodes.Ldc_I4_S, 13);
+                ilGen.Emit(OpCodes.Ceq);
+                ilGen.Emit(OpCodes.Br, secondConditionLabel);
+
+                ilGen.MarkLabel(firstConditionLabel);
+                ilGen.Emit(OpCodes.Ldc_I4_1);
+
+                ilGen.MarkLabel(secondConditionLabel);
+                ilGen.Emit(OpCodes.Brtrue, startLabel);
+
+                ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
+                ilGen.Emit(OpCodes.Ldsfld, accumulator1);
+                ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("Push"));
+            }
+            else
+            {
+                ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
+                ilGen.Emit(OpCodes.Call, typeof(Console).GetMethod("Read"));
+                ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("Push"));
+            }
 
             ilGen.Emit(OpCodes.Ret);
         }

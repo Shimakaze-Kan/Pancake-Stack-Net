@@ -11,19 +11,31 @@ namespace PancakeStack_Compiler
     {
         static void Main(string[] args)
         {
+            if(args.Length < 2)
+            {
+                Console.WriteLine("Error: Not enough input arguments");
+                return;
+            }
+
             string sourceFileName = args[0];
             string outputFileName = args[1];
-            bool compilerFlag = false;
-            if(args.Length == 3 && args[2] == "-wait")
+
+            string[] allCompilerFlags = new string[] { "-wait", "-nonewline" };
+            List<string> compilerFlags = new List<string>();
+
+            foreach (var flag in allCompilerFlags)
             {
-                compilerFlag = true;
+                if(args.Any(item => item == flag))
+                {
+                    compilerFlags.Add(flag);
+                }
             }
 
             var sourceCode = File.ReadAllLines(sourceFileName);
 
             //sourceCode = sourceCode.Select(item => item.Trim());
 
-            PSCompiler.Compile(outputFileName, outputFileName + ".exe", sourceCode, compilerFlag);
+            PSCompiler.Compile(outputFileName, outputFileName + ".exe", sourceCode, compilerFlags);
             Console.WriteLine($"File: {sourceFileName} successfully compiled to {outputFileName}.exe");
         }
     }
