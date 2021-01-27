@@ -249,6 +249,12 @@ namespace PancakeStack_Compiler
 
             if (waitFlag)
             {
+                if(methodDictionary.TryGetValue("HowAboutAHotcake", out _))
+                {
+                    ilGen.Emit(OpCodes.Call, typeof(Console).GetMethod("ReadLine"));
+                    ilGen.Emit(OpCodes.Pop);
+                }
+
                 ilGen.Emit(OpCodes.Call, typeof(Console).GetMethod("ReadLine"));
                 ilGen.Emit(OpCodes.Pop);
             }
@@ -667,6 +673,12 @@ namespace PancakeStack_Compiler
 
             if(waitFlag)
             {
+                if (methodDictionary.TryGetValue("HowAboutAHotcake", out _))
+                {
+                    ilGen.Emit(OpCodes.Call, typeof(Console).GetMethod("ReadLine"));
+                    ilGen.Emit(OpCodes.Pop);
+                }
+
                 ilGen.Emit(OpCodes.Call, typeof(Console).GetMethod("ReadLine"));
                 ilGen.Emit(OpCodes.Pop);
             }
