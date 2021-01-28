@@ -49,7 +49,14 @@ namespace IDE.ViewModels
 
         public void SaveFile()
         {
-            File.WriteAllText(Document.FilePath, Document.Text);
+            if (string.IsNullOrEmpty(Document.FilePath))
+            {
+                SaveFileAs();
+            }
+            else
+            {
+                File.WriteAllText(Document.FilePath, Document.Text);
+            }
         }
 
         public void SaveFileAs()
