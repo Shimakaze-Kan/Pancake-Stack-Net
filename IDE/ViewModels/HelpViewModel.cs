@@ -18,7 +18,7 @@ namespace IDE.ViewModels
 
         private void DisplayAbout()
         {
-
+            new AboutDialog().ShowDialog();
         }
     }
 }
