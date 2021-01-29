@@ -60,6 +60,9 @@
     <Compile Include="FormatDialog.xaml.cs">
       <DependentUpon>FormatDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="EmbeddedInterpreter.cs" />
+    <Compile Include="Models\ConsoleModel.cs" />
+    <Compile Include="OutputEventArg.cs" />
     <Compile Include="RelayCommand.cs" />
     <Compile Include="ViewModels\EditorViewModel.cs" />
     <Compile Include="ViewModels\FileViewModel.cs" />

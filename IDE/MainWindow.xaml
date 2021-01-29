@@ -17,7 +17,10 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <Menu Grid.Row="0" Grid.Column="0">
@@ -38,7 +41,11 @@
             </Menu.Items>
         </Menu>
 
-        <DockPanel Grid.Row="1" Grid.Column="0">
+        <StackPanel Grid.Row="1" Grid.Column="0" DataContext="{Binding Editor}">
+            <Button Content="Run" Command="{Binding RunInterpreterCommand}"/>
+        </StackPanel>
+        
+        <DockPanel Grid.Row="2" Grid.Column="0">
             <TextBlock DockPanel.Dock="Bottom"
                        DataContext="{Binding File.Document}"
                        Text="{Binding FileName}"/>
@@ -55,6 +62,24 @@
                      AcceptsTab="True"
                      Text="{Binding Document.Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
         </DockPanel>
-                   
+
+        <DockPanel Grid.Row="3" Grid.Column="0">
+            <TextBlock DockPanel.Dock="Top" Text="Console:"/>
+            <TextBox DockPanel.Dock="Bottom" 
+                    VerticalScrollBarVisibility="Auto"
+                     DataContext="{Binding Editor}"
+                     FontFamily="Consolas"
+                     FontSize="{Binding Format.Size}"
+                     TextWrapping="Wrap"
+                     AcceptsReturn="True"
+                     AcceptsTab="True"
+                     Text="{Binding Console.ConsoleText}"/>
+        </DockPanel>
+
+        <TextBox Grid.Row="4" Grid.Column="0" Text="{Binding Editor.Console.InputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            <TextBox.InputBindings>
+                <KeyBinding Command="{Binding Editor.SendInputCommand}" Key="Enter"/>
+            </TextBox.InputBindings>
+        </TextBox>
     </Grid>
 </Window>
