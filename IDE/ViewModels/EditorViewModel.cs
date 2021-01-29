@@ -17,21 +17,25 @@ namespace IDE.ViewModels
         public ICommand WrapCommand { get; }
         public ICommand RunInterpreterCommand { get; }
         public ICommand SendInputCommand { get; }
+        public ICommand EndCurrentTaskCommand { get; }
         public FormatModel Format { get; set; }
         public DocumentModel Document { get; set; }
         public ConsoleModel Console { get; set; }
 
-        private EmbeddedInterpreter embeddedInterpreter;
+        private EmbeddedInterpreter _embeddedInterpreter;
+        private CancellationTokenSource _cancellationTokenSource;
 
-        public EditorViewModel(DocumentModel document)
+        public EditorViewModel(DocumentModel document, CancellationTokenSource cancellationTokenSource)
         {
-            Console = new ConsoleModel(); // tmp
+            Console = new ConsoleModel();
             Document = document;
+            _cancellationTokenSource = cancellationTokenSource;
             Format = new FormatModel() { Family = new FontFamily("Consolas"), Size = 18 };
             FormatCommand = new RelayCommand(OpenFormatDialog);
             WrapCommand = new RelayCommand(ToggleWrap);
             RunInterpreterCommand = new RelayCommand(RunInterpreter);
             SendInputCommand = new RelayCommand(SendInput);
+            EndCurrentTaskCommand = new RelayCommand(EndCurrentInterpreterTask);
         }
 
         private void ToggleWrap()
@@ -57,8 +61,10 @@ namespace IDE.ViewModels
 
         private void RunInterpreter()
         {
-            embeddedInterpreter = new EmbeddedInterpreter(Document.Text);
-            embeddedInterpreter.NewOutputEvent += 
+            EndCurrentInterpreterTask();
+
+            _embeddedInterpreter = new EmbeddedInterpreter(Document.Text);
+            _embeddedInterpreter.NewOutputEvent += 
                 new EventHandler<OutputEventArgs>(delegate (Object o, OutputEventArgs a) // TODO change to dispatcher
                 {
                     if (a.Type == OutputType.Character)
@@ -69,16 +75,24 @@ namespace IDE.ViewModels
 
             Console.ConsoleText = "";
 
-            CancellationToken interpreterCancellationToken;
+            _cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = _cancellationTokenSource.Token;
             var interpreterTask = Task.Factory.StartNew(() => 
-                embeddedInterpreter.StartExecuting(interpreterCancellationToken), interpreterCancellationToken);
+                _embeddedInterpreter.StartExecuting(cancellationToken), cancellationToken);
         }
 
         private void SendInput()
         {
-            embeddedInterpreter.Input = Console.InputText + Environment.NewLine;
-            embeddedInterpreter.WaitHandle.Set();
+            Console.ConsoleText += ">"+Console.InputText + Environment.NewLine;
+            _embeddedInterpreter.Input = Console.InputText + Environment.NewLine;
+            _embeddedInterpreter.WaitHandle.Set();
             Console.InputText = "";
+        }
+
+        private void EndCurrentInterpreterTask()
+        {
+            _cancellationTokenSource?.Cancel();
+            _embeddedInterpreter?.WaitHandle.Set();
         }
     }
 }

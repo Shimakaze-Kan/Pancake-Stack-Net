@@ -36,13 +36,16 @@ namespace IDE
         {
             for (ProgramIterator = 0; ProgramIterator < _programCode.Length; ProgramIterator++)
             {
-                ExecuteNext();
+                if (ct.IsCancellationRequested)
+                    break;
+
+                ExecuteNext(ct);
             }
 
             EndOfExecutionEvent?.Invoke(this, EventArgs.Empty);
         }
 
-        public void ExecuteNext()
+        public void ExecuteNext(CancellationToken ct)
         {
             switch (_programCode[ProgramIterator])
             {
@@ -65,21 +68,31 @@ namespace IDE
                 case "Give me a pancake!":
                     while (string.IsNullOrEmpty(Input))
                     {
+                        if (ct.IsCancellationRequested)
+                            break;
+
                         WaitingForInputEvent?.Invoke(this, EventArgs.Empty);
                         WaitHandle.WaitOne();
                     }
 
-                    PancakeStack.Push(Convert.ToInt32(Input));
+                    if(!ct.IsCancellationRequested)
+                        PancakeStack.Push(Convert.ToInt32(Input));
                     break;
                 case "How about a hotcake?":
                     while (string.IsNullOrEmpty(Input))
                     {
+                        if (ct.IsCancellationRequested)
+                            break;
+
                         WaitingForInputEvent?.Invoke(this, EventArgs.Empty);
                         WaitHandle.WaitOne();
                     }
-                    
-                    PancakeStack.Push(Input[0]);
-                    Input = Input.Remove(0, 1); // imitate console buffer
+
+                    if (!ct.IsCancellationRequested)
+                    {
+                        PancakeStack.Push(Input[0]);
+                        Input = Input.Remove(0, 1); // imitate console buffer
+                    }
                     break;
                 case "Show me a pancake!":
                     NewOutputEvent(this, new OutputEventArgs() { Type = OutputType.Character, CharacterOutput = (char)PancakeStack.Peek() });

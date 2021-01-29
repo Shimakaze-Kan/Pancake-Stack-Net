@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -19,9 +20,12 @@ namespace IDE.ViewModels
         public ICommand SaveCommand { get; }
         public ICommand SaveAsCommand { get; }
 
-        public FileViewModel(DocumentModel document)
+        private CancellationTokenSource _cancellationTokenSource;
+
+        public FileViewModel(DocumentModel document, CancellationTokenSource cancellationTokenSource)
         {
             Document = document;
+            _cancellationTokenSource = cancellationTokenSource;
             NewCommand = new RelayCommand(NewFile);
             OpenCommand = new RelayCommand(OpenFile);
             SaveCommand = new RelayCommand(SaveFile);
@@ -42,6 +46,8 @@ namespace IDE.ViewModels
 
             if(openFileDialog.ShowDialog() == true)
             {
+                _cancellationTokenSource?.Cancel();
+
                 DockFile(openFileDialog);
                 Document.Text = File.ReadAllText(openFileDialog.FileName);
             }

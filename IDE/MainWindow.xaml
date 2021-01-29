@@ -41,8 +41,9 @@
             </Menu.Items>
         </Menu>
 
-        <StackPanel Grid.Row="1" Grid.Column="0" DataContext="{Binding Editor}">
+        <StackPanel Grid.Row="1" Grid.Column="0" DataContext="{Binding Editor}" Orientation="Horizontal">
             <Button Content="Run" Command="{Binding RunInterpreterCommand}"/>
+            <Button Content="Stop" Command="{Binding EndCurrentTaskCommand}"/>
         </StackPanel>
         
         <DockPanel Grid.Row="2" Grid.Column="0">
