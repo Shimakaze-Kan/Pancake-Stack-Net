@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace IDE.ViewModels
 {
@@ -18,14 +19,9 @@ namespace IDE.ViewModels
         public EditorViewModel(DocumentModel document)
         {
             Document = document;
-            Format = new FormatModel();
-            FormatCommand = new RelayCommand(OpenStyleDialog);
+            Format = new FormatModel() { Family = new FontFamily("Consolas"), Size = 18 };
+            FormatCommand = new RelayCommand(OpenFormatDialog);
             WrapCommand = new RelayCommand(ToggleWrap);
-        }
-
-        private void OpenStyleDialog()
-        {
-            throw new NotImplementedException();
         }
 
         private void ToggleWrap()
@@ -38,6 +34,15 @@ namespace IDE.ViewModels
             {
                 Format.Wrap = System.Windows.TextWrapping.Wrap;
             }
+        }
+
+        private void OpenFormatDialog()
+        {
+            var formatDialog = new FormatDialog
+            {
+                DataContext = Format
+            };
+            formatDialog.ShowDialog();
         }
     }
 }

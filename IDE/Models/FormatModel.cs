@@ -31,7 +31,7 @@ namespace IDE.Models
         public FontFamily Family
         {
             get { return _family; }
-            set { _family = value; }
+            set { OnPropertyChanged(ref _family, value); }
         }
 
         private TextWrapping _wrap;
