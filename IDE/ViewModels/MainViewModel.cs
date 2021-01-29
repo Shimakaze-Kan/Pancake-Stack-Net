@@ -11,7 +11,6 @@ namespace IDE.ViewModels
     public class MainViewModel
     {
         private DocumentModel _document;
-        private CancellationTokenSource _cancellationTokenSource;
 
         public EditorViewModel Editor { get; set; }
         public FileViewModel File { get; set; }
@@ -20,8 +19,8 @@ namespace IDE.ViewModels
         public MainViewModel()
         {
             _document = new DocumentModel();
-            Editor = new EditorViewModel(_document, _cancellationTokenSource);
-            File = new FileViewModel(_document, _cancellationTokenSource);
+            Editor = new EditorViewModel(_document);
+            File = new FileViewModel(_document);
             Help = new HelpViewModel();
         }
     }

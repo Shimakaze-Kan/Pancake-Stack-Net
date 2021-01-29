@@ -24,18 +24,23 @@ namespace IDE.ViewModels
 
         private EmbeddedInterpreter _embeddedInterpreter;
         private CancellationTokenSource _cancellationTokenSource;
+        private Task _interpreterTask;
+        private bool _isTaskRunning;
+        private bool _isTaskWaitingForInput;
 
-        public EditorViewModel(DocumentModel document, CancellationTokenSource cancellationTokenSource)
+        public EditorViewModel(DocumentModel document)
         {
             Console = new ConsoleModel();
             Document = document;
-            _cancellationTokenSource = cancellationTokenSource;
+            _isTaskRunning = false;
+            _isTaskWaitingForInput = false;
+            _cancellationTokenSource = new CancellationTokenSource();
             Format = new FormatModel() { Family = new FontFamily("Consolas"), Size = 18 };
             FormatCommand = new RelayCommand(OpenFormatDialog);
             WrapCommand = new RelayCommand(ToggleWrap);
-            RunInterpreterCommand = new RelayCommand(RunInterpreter);
-            SendInputCommand = new RelayCommand(SendInput);
-            EndCurrentTaskCommand = new RelayCommand(EndCurrentInterpreterTask);
+            RunInterpreterCommand = new RelayCommand(RunInterpreter, () => !_isTaskRunning);
+            SendInputCommand = new RelayCommand(SendInput, () => _isTaskWaitingForInput);
+            EndCurrentTaskCommand = new RelayCommand(EndCurrentInterpreterTask, () => _isTaskRunning);
         }
 
         private void ToggleWrap()
@@ -72,13 +77,15 @@ namespace IDE.ViewModels
                     else
                         Console.ConsoleText += a.LineOutput + Environment.NewLine;
                 });
+            _embeddedInterpreter.WaitingForInputEvent += new EventHandler((o, a) => _isTaskWaitingForInput = true);
 
             Console.ConsoleText = "";
 
             _cancellationTokenSource = new CancellationTokenSource();
             CancellationToken cancellationToken = _cancellationTokenSource.Token;
-            var interpreterTask = Task.Factory.StartNew(() => 
-                _embeddedInterpreter.StartExecuting(cancellationToken), cancellationToken);
+            _interpreterTask = Task.Factory.StartNew(() =>
+                _embeddedInterpreter.StartExecuting(cancellationToken), cancellationToken).ContinueWith((task) => _isTaskRunning = false);
+            _isTaskRunning = true;
         }
 
         private void SendInput()
@@ -87,6 +94,7 @@ namespace IDE.ViewModels
             _embeddedInterpreter.Input = Console.InputText + Environment.NewLine;
             _embeddedInterpreter.WaitHandle.Set();
             Console.InputText = "";
+            _isTaskWaitingForInput = false;
         }
 
         private void EndCurrentInterpreterTask()
@@ -94,5 +102,6 @@ namespace IDE.ViewModels
             _cancellationTokenSource?.Cancel();
             _embeddedInterpreter?.WaitHandle.Set();
         }
+
     }
 }
