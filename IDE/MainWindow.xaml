@@ -19,6 +19,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
@@ -64,7 +65,15 @@
                      Text="{Binding Document.Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
         </DockPanel>
 
-        <DockPanel Grid.Row="3" Grid.Column="0">
+        <GridSplitter Grid.Row="3" Grid.Column="0"
+              HorizontalAlignment="Stretch"
+              VerticalAlignment="Center"
+              Background="Black" 
+              ShowsPreview="True"
+              Height="5"
+              />
+        
+        <DockPanel Grid.Row="4" Grid.Column="0">
             <TextBlock DockPanel.Dock="Top" Text="Console:"/>
             <TextBox DockPanel.Dock="Bottom" 
                     VerticalScrollBarVisibility="Auto"
@@ -77,7 +86,7 @@
                      Text="{Binding Console.ConsoleText}"/>
         </DockPanel>
 
-        <TextBox Grid.Row="4" Grid.Column="0" Text="{Binding Editor.Console.InputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+        <TextBox Grid.Row="5" Grid.Column="0" Text="{Binding Editor.Console.InputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <TextBox.InputBindings>
                 <KeyBinding Command="{Binding Editor.SendInputCommand}" Key="Enter"/>
             </TextBox.InputBindings>
