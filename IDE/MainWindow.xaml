@@ -11,6 +11,13 @@
     <Window.DataContext>
         <viewmodel:MainViewModel/>
     </Window.DataContext>
+    <Window.InputBindings>
+        <KeyBinding Key="F5" Command="{Binding Editor.RunInterpreterCommand}"/>
+        <KeyBinding Modifiers="Ctrl" Key="S" Command="{Binding File.SaveCommand}"/>
+        <KeyBinding Modifiers="Shift" Key="F5" Command="{Binding Editor.EndCurrentTaskCommand}"/>
+        
+    </Window.InputBindings>
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
