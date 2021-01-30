@@ -38,7 +38,7 @@ namespace IDE.ViewModels
             Format = new FormatModel() { Family = new FontFamily("Consolas"), Size = 18 };
             FormatCommand = new RelayCommand(OpenFormatDialog);
             WrapCommand = new RelayCommand(ToggleWrap);
-            RunInterpreterCommand = new RelayCommand(RunInterpreter, () => !_isTaskRunning);
+            RunInterpreterCommand = new RelayCommand(RunInterpreter, () => !_isTaskRunning && !Document.IsEmpty);
             SendInputCommand = new RelayCommand(SendInput, () => _isTaskWaitingForInput);
             EndCurrentTaskCommand = new RelayCommand(EndCurrentInterpreterTask, () => _isTaskRunning);
         }
