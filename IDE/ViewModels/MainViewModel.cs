@@ -11,7 +11,8 @@ namespace IDE.ViewModels
     public class MainViewModel
     {
         private DocumentModel _document;
-        private DebuggerModel _debugger;
+        private DebuggerModel _debuggerModel;
+        private ConsoleModel _console;
 
         public EditorViewModel Editor { get; set; }
         public FileViewModel File { get; set; }
@@ -21,11 +22,13 @@ namespace IDE.ViewModels
         public MainViewModel()
         {
             _document = new DocumentModel();
-            _debugger = new DebuggerModel();
-            Editor = new EditorViewModel(_document, _debugger);
+            _debuggerModel = new DebuggerModel();
+            _console = new ConsoleModel();
+
+            Editor = new EditorViewModel(_document);
             File = new FileViewModel(_document);
             Help = new HelpViewModel();
-            Debugger = new DebuggerViewModel(_debugger);
+            Debugger = new DebuggerViewModel(_document, _console, _debuggerModel);
         }
     }
 }

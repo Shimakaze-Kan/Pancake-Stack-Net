@@ -49,6 +49,12 @@ namespace IDE
 
         public void ExecuteNext(CancellationToken ct)
         {
+            if (ProgramIterator >= _programCode.Length - 1 || ct.IsCancellationRequested)
+            {
+                EndOfExecutionEvent?.Invoke(this, EventArgs.Empty);
+                return;
+            }               
+
             switch (_programCode[ProgramIterator])
             {
                 case var word when new Regex(@"Put this ([^ ]*?) pancake on top!").IsMatch(word):
@@ -174,7 +180,7 @@ namespace IDE
                     //Console.Write(PancakeStack.Peek());
                     break;
                 case "Eat all of the pancakes!":
-                    EndOfExecutionEvent?.Invoke(this, EventArgs.Empty);
+                    ProgramIterator = _programCode.Length;
                     return;
             }
 

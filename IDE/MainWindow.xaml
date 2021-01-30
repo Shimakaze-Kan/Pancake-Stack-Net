@@ -12,10 +12,10 @@
         <viewmodel:MainViewModel/>
     </Window.DataContext>
     <Window.InputBindings>
-        <KeyBinding Key="F5" Command="{Binding Editor.RunInterpreterCommand}"/>
+        <KeyBinding Key="F5" Command="{Binding Debugger.RunInterpreterCommand}"/>
         <KeyBinding Modifiers="Ctrl" Key="S" Command="{Binding File.SaveCommand}"/>
-        <KeyBinding Modifiers="Shift" Key="F5" Command="{Binding Editor.EndCurrentTaskCommand}"/>
-        <KeyBinding Key="F10" Command="{Binding Editor.NextInstructionCommand}"/>
+        <KeyBinding Modifiers="Shift" Key="F5" Command="{Binding Debugger.EndCurrentTaskCommand}"/>
+        <KeyBinding Key="F10" Command="{Binding Debugger.NextInstructionCommand}"/>
     </Window.InputBindings>
 
     <Grid>
@@ -51,7 +51,7 @@
             </Menu.Items>
         </Menu>
 
-        <StackPanel Grid.Row="1" Grid.Column="0" DataContext="{Binding Editor}" Orientation="Horizontal">
+        <StackPanel Grid.Row="1" Grid.Column="0" DataContext="{Binding Debugger}" Orientation="Horizontal">
             <Button Content="Run" Command="{Binding RunInterpreterCommand}"/>
             <Button Content="Stop" Command="{Binding EndCurrentTaskCommand}"/>
             <Button Content="Next Instruction" Command="{Binding NextInstructionCommand}"/>
@@ -87,18 +87,17 @@
             <TextBlock DockPanel.Dock="Top" Text="Console:"/>
             <TextBox DockPanel.Dock="Bottom" 
                     VerticalScrollBarVisibility="Auto"
-                     DataContext="{Binding Editor}"
                      FontFamily="Consolas"
-                     FontSize="{Binding Format.Size}"
+                     FontSize="{Binding Editor.Format.Size}"
                      TextWrapping="Wrap"
                      AcceptsReturn="True"
                      AcceptsTab="True"
-                     Text="{Binding Console.ConsoleText}"/>
+                     Text="{Binding Debugger.Console.ConsoleText}"/>
         </DockPanel>
 
-        <TextBox Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding Editor.Console.InputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+        <TextBox Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding Debugger.Console.InputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <TextBox.InputBindings>
-                <KeyBinding Command="{Binding Editor.SendInputCommand}" Key="Enter"/>
+                <KeyBinding Command="{Binding Debugger.SendInputCommand}" Key="Enter"/>
             </TextBox.InputBindings>
         </TextBox>
 
