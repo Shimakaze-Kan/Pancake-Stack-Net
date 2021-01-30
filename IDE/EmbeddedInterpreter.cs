@@ -13,11 +13,13 @@ namespace IDE
         public event EventHandler EndOfExecutionEvent;
         public event EventHandler WaitingForInputEvent;
         public event EventHandler<OutputEventArgs> NewOutputEvent;
+        public event EventHandler<Stack<int>> PancakeStackChangedEvent;
+        public event EventHandler<Dictionary<string,int>> LabelDictionaryChangedEvent;
         public EventWaitHandle WaitHandle;
 
         private string[] _programCode;
         public Dictionary<string, int> Labels { get; set; }
-        public Stack<int> PancakeStack { get; private set; }
+        public Stack<int> PancakeStack { get; set; }
         public int ProgramIterator { get; set; }
         public string Input { private get; set; }
 
@@ -34,12 +36,12 @@ namespace IDE
 
         public void StartExecuting(CancellationToken ct)
         {
-            for (ProgramIterator = 0; ProgramIterator < _programCode.Length; ProgramIterator++)
+            while(ProgramIterator < _programCode.Length)
             {
                 if (ct.IsCancellationRequested)
                     break;
 
-                ExecuteNext(ct);
+                ExecuteNext(ct);                
             }
 
             EndOfExecutionEvent?.Invoke(this, EventArgs.Empty);
@@ -128,6 +130,7 @@ namespace IDE
                         }
 
                         Labels[match.Groups[1].Value] = PancakeStack.Peek() - 2; //Pancake stack language start counting lines from 1
+                        LabelDictionaryChangedEvent?.Invoke(this, Labels);
                         break;
                     }
                 case var label when new Regex(@"If the pancake isn't tasty, go over to ""(.*)"".").IsMatch(label):
@@ -171,8 +174,12 @@ namespace IDE
                     //Console.Write(PancakeStack.Peek());
                     break;
                 case "Eat all of the pancakes!":
+                    EndOfExecutionEvent?.Invoke(this, EventArgs.Empty);
                     return;
             }
+
+            PancakeStackChangedEvent?.Invoke(this, PancakeStack);
+            ProgramIterator++;
         }
 
     }

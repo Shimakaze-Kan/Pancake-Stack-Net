@@ -15,19 +15,21 @@
         <KeyBinding Key="F5" Command="{Binding Editor.RunInterpreterCommand}"/>
         <KeyBinding Modifiers="Ctrl" Key="S" Command="{Binding File.SaveCommand}"/>
         <KeyBinding Modifiers="Shift" Key="F5" Command="{Binding Editor.EndCurrentTaskCommand}"/>
-        
+        <KeyBinding Key="F10" Command="{Binding Editor.NextInstructionCommand}"/>
     </Window.InputBindings>
-    
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="0.3*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="0.3*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
@@ -52,8 +54,9 @@
         <StackPanel Grid.Row="1" Grid.Column="0" DataContext="{Binding Editor}" Orientation="Horizontal">
             <Button Content="Run" Command="{Binding RunInterpreterCommand}"/>
             <Button Content="Stop" Command="{Binding EndCurrentTaskCommand}"/>
+            <Button Content="Next Instruction" Command="{Binding NextInstructionCommand}"/>
         </StackPanel>
-        
+
         <DockPanel Grid.Row="2" Grid.Column="0">
             <TextBlock DockPanel.Dock="Bottom"
                        DataContext="{Binding File.Document}"
@@ -72,15 +75,15 @@
                      Text="{Binding Document.Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
         </DockPanel>
 
-        <GridSplitter Grid.Row="3" Grid.Column="0"
+        <GridSplitter Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
               HorizontalAlignment="Stretch"
               VerticalAlignment="Center"
               Background="Black" 
               ShowsPreview="True"
               Height="5"
               />
-        
-        <DockPanel Grid.Row="4" Grid.Column="0">
+
+        <DockPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3">
             <TextBlock DockPanel.Dock="Top" Text="Console:"/>
             <TextBox DockPanel.Dock="Bottom" 
                     VerticalScrollBarVisibility="Auto"
@@ -93,10 +96,41 @@
                      Text="{Binding Console.ConsoleText}"/>
         </DockPanel>
 
-        <TextBox Grid.Row="5" Grid.Column="0" Text="{Binding Editor.Console.InputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+        <TextBox Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding Editor.Console.InputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <TextBox.InputBindings>
                 <KeyBinding Command="{Binding Editor.SendInputCommand}" Key="Enter"/>
             </TextBox.InputBindings>
         </TextBox>
+
+        <GridSplitter Grid.Row="2" Grid.Column="1"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Stretch"
+              Background="Black" 
+              ShowsPreview="True"
+              Width="5"
+              />
+
+        <Grid Grid.Row="2" Grid.Column="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+
+            <ListView Grid.Column="0" ItemsSource="{Binding Debugger.Debugger.Stack, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Stack" DisplayMemberBinding="{Binding}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <ListView Grid.Column="1" ItemsSource="{Binding Debugger.Debugger.Label, UpdateSourceTrigger=PropertyChanged}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Labels" DisplayMemberBinding="{Binding}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
     </Grid>
 </Window>

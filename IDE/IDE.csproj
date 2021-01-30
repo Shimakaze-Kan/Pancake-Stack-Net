@@ -62,8 +62,10 @@
     </Compile>
     <Compile Include="EmbeddedInterpreter.cs" />
     <Compile Include="Models\ConsoleModel.cs" />
+    <Compile Include="Models\DebuggerModel.cs" />
     <Compile Include="OutputEventArg.cs" />
     <Compile Include="RelayCommand.cs" />
+    <Compile Include="ViewModels\DebuggerViewModel.cs" />
     <Compile Include="ViewModels\EditorViewModel.cs" />
     <Compile Include="ViewModels\FileViewModel.cs" />
     <Compile Include="ViewModels\HelpViewModel.cs" />
@@ -121,5 +123,6 @@
   <ItemGroup>
     <Resource Include="pancakes-575795_640.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
