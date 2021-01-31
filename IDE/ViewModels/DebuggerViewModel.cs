@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace IDE.ViewModels
 {
@@ -19,6 +20,7 @@ namespace IDE.ViewModels
         public DebuggerModel Debugger { get; set; }
         public DocumentModel Document { get; set; }
         public ConsoleModel Console { get; set; }
+        public DebugDocumentModel DebugDocument { get; set; }
 
         private EmbeddedInterpreter _embeddedInterpreter;
         private CancellationTokenSource _cancellationTokenSource;
@@ -26,6 +28,7 @@ namespace IDE.ViewModels
         private bool _isTaskRunning;
         private bool _isTaskWaitingForInput;
         private bool _isDebbugingMode;
+        private int _previousInstruction;
 
         //private object _currentView;
         private EditorView _editorView;
@@ -40,11 +43,12 @@ namespace IDE.ViewModels
         }
 
 
-        public DebuggerViewModel(DocumentModel document, ConsoleModel console, DebuggerModel debugger, object currentView, EditorView editorView, EditorDebugView editorDebugView)
+        public DebuggerViewModel(DocumentModel document, DebugDocumentModel debugDocumentModel, ConsoleModel console, DebuggerModel debugger, object currentView, EditorView editorView, EditorDebugView editorDebugView)
         {
             Debugger = debugger;
             Console = console;
             Document = document;
+            DebugDocument = debugDocumentModel;
 
             _currentView = currentView;
             _editorView = editorView;
@@ -79,6 +83,9 @@ namespace IDE.ViewModels
         {
             if (!_isDebbugingMode)
             {
+                DebugDocument.Lines = new System.Collections.ObjectModel.ObservableCollection<TextLine>( Document.Text.Split(new string[] { System.Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).Select(x => new TextLine() { Text = x, BackgroundColor = Brushes.Transparent } ));
+                DebugDocument.LinePointer = 0;
+                _previousInstruction = 0;
                 CurrentView = _editorDebugView;
 
                 Console.ConsoleText = "";
@@ -90,10 +97,13 @@ namespace IDE.ViewModels
             }
             else if (!_isTaskWaitingForInput)
             {
+                DebugDocument.Lines[_previousInstruction].BackgroundColor = Brushes.Transparent;
+                
+                
                 _cancellationTokenSource = new CancellationTokenSource();
                 CancellationToken cancellationToken = _cancellationTokenSource.Token;
                 _interpreterTask = Task.Factory.StartNew(() =>
-                    _embeddedInterpreter.ExecuteNext(cancellationToken), cancellationToken);
+                    _embeddedInterpreter.ExecuteNext(cancellationToken), cancellationToken).ContinueWith((_) => { DebugDocument.LinePointer = _embeddedInterpreter.ProgramIterator; _previousInstruction = _embeddedInterpreter.ProgramIterator; });              
             }
         }
 

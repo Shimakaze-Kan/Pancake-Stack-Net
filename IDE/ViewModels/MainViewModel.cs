@@ -15,6 +15,7 @@ namespace IDE.ViewModels
         private DocumentModel _document;
         private DebuggerModel _debuggerModel;
         private ConsoleModel _console;
+        private DebugDocumentModel _debugDocumentModel;
 
         private EditorView _editorView;
         private EditorDebugView _editorDebugView;
@@ -30,6 +31,8 @@ namespace IDE.ViewModels
             _document = new DocumentModel();
             _debuggerModel = new DebuggerModel();
             _console = new ConsoleModel();
+            _debugDocumentModel = new DebugDocumentModel();
+
             _editorView = new EditorView();
             _editorDebugView = new EditorDebugView();
             _currentView = _editorView;
@@ -37,7 +40,7 @@ namespace IDE.ViewModels
             Editor = new EditorViewModel(_document);
             File = new FileViewModel(_document);
             Help = new HelpViewModel();
-            Debugger = new DebuggerViewModel(_document, _console, _debuggerModel, _currentView, _editorView, _editorDebugView);
+            Debugger = new DebuggerViewModel(_document,_debugDocumentModel , _console, _debuggerModel, _currentView, _editorView, _editorDebugView);
         }
     }
 }
