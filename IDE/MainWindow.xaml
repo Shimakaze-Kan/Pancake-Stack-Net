@@ -57,7 +57,7 @@
             <Button Content="Next Instruction" Command="{Binding NextInstructionCommand}"/>
         </StackPanel>
 
-        <DockPanel Grid.Row="2" Grid.Column="0">
+        <!--<DockPanel Grid.Row="2" Grid.Column="0">
             <TextBlock DockPanel.Dock="Bottom"
                        DataContext="{Binding File.Document}"
                        Text="{Binding FileName}"/>
@@ -73,7 +73,8 @@
                      AcceptsReturn="True"
                      AcceptsTab="True"
                      Text="{Binding Document.Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-        </DockPanel>
+        </DockPanel>-->
+        <ContentControl Grid.Row="2" Grid.Column="0" Content="{Binding Debugger.CurrentView, UpdateSourceTrigger=PropertyChanged}"/>
 
         <GridSplitter Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
               HorizontalAlignment="Stretch"

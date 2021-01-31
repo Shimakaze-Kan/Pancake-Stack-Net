@@ -1,4 +1,5 @@
 ﻿using IDE.Models;
+using IDE.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ using System.Windows.Input;
 
 namespace IDE.ViewModels
 {
-    public class DebuggerViewModel
+    public class DebuggerViewModel : ObservableObject
     {
         public ICommand SendInputCommand { get; }
         public ICommand EndCurrentTaskCommand { get; }
@@ -26,11 +27,28 @@ namespace IDE.ViewModels
         private bool _isTaskWaitingForInput;
         private bool _isDebbugingMode;
 
-        public DebuggerViewModel(DocumentModel document, ConsoleModel console, DebuggerModel debugger)
+        //private object _currentView;
+        private EditorView _editorView;
+        private EditorDebugView _editorDebugView;
+
+        private object _currentView;
+
+        public object CurrentView
+        {
+            get { return _currentView; }
+            set { OnPropertyChanged(ref _currentView, value); }
+        }
+
+
+        public DebuggerViewModel(DocumentModel document, ConsoleModel console, DebuggerModel debugger, object currentView, EditorView editorView, EditorDebugView editorDebugView)
         {
             Debugger = debugger;
             Console = console;
             Document = document;
+
+            _currentView = currentView;
+            _editorView = editorView;
+            _editorDebugView = editorDebugView;
 
             _isTaskRunning = false;
             _isTaskWaitingForInput = false;
@@ -61,6 +79,8 @@ namespace IDE.ViewModels
         {
             if (!_isDebbugingMode)
             {
+                CurrentView = _editorDebugView;
+
                 Console.ConsoleText = "";
                 AddHandlersToInterpreterThread();
 
@@ -94,6 +114,7 @@ namespace IDE.ViewModels
             if (_isDebbugingMode)
             {
                 _isDebbugingMode = false;
+                CurrentView = _editorView;
             }
             if (_isTaskRunning)
             {
