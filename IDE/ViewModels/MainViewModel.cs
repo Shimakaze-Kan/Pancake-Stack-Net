@@ -25,6 +25,7 @@ namespace IDE.ViewModels
         public FileViewModel File { get; set; }
         public HelpViewModel Help { get; set; }
         public DebuggerViewModel Debugger { get; set; }
+        public CompilerViewModel Compiler { get; set; }
 
         public MainViewModel()
         {
@@ -41,6 +42,7 @@ namespace IDE.ViewModels
             File = new FileViewModel(_document);
             Help = new HelpViewModel();
             Debugger = new DebuggerViewModel(_document,_debugDocumentModel , _console, _debuggerModel, _currentView, _editorView, _editorDebugView);
+            Compiler = new CompilerViewModel(_document, _console);
         }
     }
 }
