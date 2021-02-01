@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IDE"
         xmlns:viewmodel="clr-namespace:IDE.ViewModels"
+        xmlns:converter="clr-namespace:IDE.Converters"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
 
@@ -18,6 +19,7 @@
         <KeyBinding Key="F10" Command="{Binding Debugger.NextInstructionCommand}"/>
     </Window.InputBindings>
     <Window.Resources>
+        <converter:BottomBarColorConverter x:Key="BottomBarColorConverter"/>
         <Style TargetType="Button">
             <Setter Property="Background" Value="#3F3F46"/>
             <Setter Property="Foreground" Value="White"/>
@@ -97,9 +99,8 @@
         </TextBox>
 
         <TextBlock Grid.Row="6" Grid.Column="0"
-                   DataContext="{Binding File.Document}"
-                   Text="{Binding FileName}"
-                   Background="#3A66A7" 
+                   Text="{Binding File.Document.FileName}"
+                   Background="{Binding Debugger.IsDebuggingMode, Converter={StaticResource BottomBarColorConverter}}" 
                    Foreground="White"
                    Padding="10 0"/>
         <!--#FF9912-->

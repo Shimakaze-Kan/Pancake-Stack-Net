@@ -57,6 +57,7 @@
     <Compile Include="AboutDialog.xaml.cs">
       <DependentUpon>AboutDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\BottomBarColorConverter.cs" />
     <Compile Include="FormatDialog.xaml.cs">
       <DependentUpon>FormatDialog.xaml</DependentUpon>
     </Compile>

@@ -27,7 +27,7 @@ namespace IDE.ViewModels
         private Task _interpreterTask;
         private bool _isTaskRunning;
         private bool _isTaskWaitingForInput;
-        private bool _isDebbugingMode;
+        private bool _isDebuggingMode;
         private int _previousInstruction;
 
         //private object _currentView;
@@ -40,6 +40,12 @@ namespace IDE.ViewModels
         {
             get { return _currentView; }
             set { OnPropertyChanged(ref _currentView, value); }
+        }
+    
+        public bool IsDebuggingMode
+        {
+            get { return _isDebuggingMode; }
+            set { OnPropertyChanged(ref _isDebuggingMode, value); }
         }
 
 
@@ -56,12 +62,12 @@ namespace IDE.ViewModels
 
             _isTaskRunning = false;
             _isTaskWaitingForInput = false;
-            _isDebbugingMode = false;
+            IsDebuggingMode = false;
             _cancellationTokenSource = new CancellationTokenSource();
 
-            RunInterpreterCommand = new RelayCommand(RunInterpreter, () => !_isTaskRunning && !string.IsNullOrEmpty(Document.Text) && !_isDebbugingMode);
+            RunInterpreterCommand = new RelayCommand(RunInterpreter, () => !_isTaskRunning && !string.IsNullOrEmpty(Document.Text) && !IsDebuggingMode);
             SendInputCommand = new RelayCommand(SendInput, () => _isTaskWaitingForInput);
-            EndCurrentTaskCommand = new RelayCommand(EndCurrentInterpreterTask, () => _isTaskRunning || _isDebbugingMode);
+            EndCurrentTaskCommand = new RelayCommand(EndCurrentInterpreterTask, () => _isTaskRunning || IsDebuggingMode);
             NextInstructionCommand = new RelayCommand(NextInstruction, () => !string.IsNullOrEmpty(Document.Text) && !_isTaskRunning);
         }
 
@@ -81,7 +87,7 @@ namespace IDE.ViewModels
 
         private void NextInstruction()
         {
-            if (!_isDebbugingMode)
+            if (!IsDebuggingMode)
             {
                 DebugDocument.Lines = new System.Collections.ObjectModel.ObservableCollection<TextLine>( Document.Text.Split(new string[] { System.Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).Select(x => new TextLine() { Text = x, BackgroundColor = Brushes.Transparent } ));
                 DebugDocument.LinePointer = 0;
@@ -91,7 +97,7 @@ namespace IDE.ViewModels
                 Console.ConsoleText = "";
                 AddHandlersToInterpreterThread();
 
-                _isDebbugingMode = true;
+                IsDebuggingMode = true;
                 Debugger.Stack = null;
                 Debugger.Label = null;
             }
@@ -121,9 +127,9 @@ namespace IDE.ViewModels
             _cancellationTokenSource?.Cancel();
             _embeddedInterpreter?.WaitHandle.Set();
 
-            if (_isDebbugingMode)
+            if (IsDebuggingMode)
             {
-                _isDebbugingMode = false;
+                IsDebuggingMode = false;
                 CurrentView = _editorView;
             }
             if (_isTaskRunning)
