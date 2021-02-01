@@ -21,8 +21,6 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="0.3*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -57,26 +55,9 @@
             <Button Content="Next Instruction" Command="{Binding NextInstructionCommand}"/>
         </StackPanel>
 
-        <!--<DockPanel Grid.Row="2" Grid.Column="0">
-            <TextBlock DockPanel.Dock="Bottom"
-                       DataContext="{Binding File.Document}"
-                       Text="{Binding FileName}"/>
-
-            <TextBox DockPanel.Dock="Top"
-                     VerticalScrollBarVisibility="Visible"
-                     DataContext="{Binding Editor}"
-                     FontFamily="{Binding Format.Family}"
-                     FontSize="{Binding Format.Size}"
-                     FontStyle="{Binding Format.Style}"
-                     FontWeight="{Binding Format.Weight}"
-                     TextWrapping="{Binding Format.Wrap}"
-                     AcceptsReturn="True"
-                     AcceptsTab="True"
-                     Text="{Binding Document.Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-        </DockPanel>-->
         <ContentControl Grid.Row="2" Grid.Column="0" Content="{Binding Debugger.CurrentView, UpdateSourceTrigger=PropertyChanged}"/>
 
-        <GridSplitter Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+        <GridSplitter Grid.Row="3" Grid.Column="0"
               HorizontalAlignment="Stretch"
               VerticalAlignment="Center"
               Background="Black" 
@@ -84,7 +65,7 @@
               Height="5"
               />
 
-        <DockPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3">
+        <DockPanel Grid.Row="4" Grid.Column="0">
             <TextBlock DockPanel.Dock="Top" Text="Console:"/>
             <TextBox DockPanel.Dock="Bottom" 
                     VerticalScrollBarVisibility="Auto"
@@ -96,41 +77,12 @@
                      Text="{Binding Debugger.Console.ConsoleText}"/>
         </DockPanel>
 
-        <TextBox Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding Debugger.Console.InputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+        <TextBox Grid.Row="5" Grid.Column="0" Text="{Binding Debugger.Console.InputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <TextBox.InputBindings>
                 <KeyBinding Command="{Binding Debugger.SendInputCommand}" Key="Enter"/>
             </TextBox.InputBindings>
         </TextBox>
 
-        <GridSplitter Grid.Row="2" Grid.Column="1"
-              HorizontalAlignment="Center"
-              VerticalAlignment="Stretch"
-              Background="Black" 
-              ShowsPreview="True"
-              Width="5"
-              />
-
-        <Grid Grid.Row="2" Grid.Column="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-
-            <ListView Grid.Column="0" ItemsSource="{Binding Debugger.Debugger.Stack, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="Stack" DisplayMemberBinding="{Binding}"/>
-                    </GridView>
-                </ListView.View>
-            </ListView>
-            <ListView Grid.Column="1" ItemsSource="{Binding Debugger.Debugger.Label, UpdateSourceTrigger=PropertyChanged}">
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="Labels" DisplayMemberBinding="{Binding}"/>
-                    </GridView>
-                </ListView.View>
-            </ListView>
-        </Grid>
+        
     </Grid>
 </Window>

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -17,6 +18,7 @@ namespace IDE.ViewModels
         public ICommand WrapCommand { get; }
         public FormatModel Format { get; set; }
         public DocumentModel Document { get; set; }
+        public ListViewItem HelpBoxInstruction { get { return null; } set { Document.Text += value.Content + Environment.NewLine; } }
 
         public EditorViewModel(DocumentModel document)
         {

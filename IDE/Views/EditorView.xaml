@@ -7,13 +7,19 @@
              xmlns:viewmodel="clr-namespace:IDE.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    
-    <DockPanel>
-        <TextBlock DockPanel.Dock="Bottom"
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <DockPanel Grid.Column="0">
+            <TextBlock DockPanel.Dock="Bottom"
                        DataContext="{Binding File.Document}"
                        Text="{Binding FileName}"/>
 
-        <TextBox DockPanel.Dock="Top"
+            <TextBox DockPanel.Dock="Top"
                      VerticalScrollBarVisibility="Visible"
                      DataContext="{Binding Editor}"
                      FontFamily="{Binding Format.Family}"
@@ -24,5 +30,45 @@
                      AcceptsReturn="True"
                      AcceptsTab="True"
                      Text="{Binding Document.Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-    </DockPanel>
+        </DockPanel>
+
+        <GridSplitter Grid.Column="1"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Stretch"
+              Background="Black" 
+              ShowsPreview="True"
+              Width="5"
+              />
+
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <TextBlock Grid.Row="0" Text="List of instructions" FontSize="20"/>
+
+            <ListView Grid.Row="1" SelectedItem="{Binding Editor.HelpBoxInstruction}">
+                <ListViewItem Content='Put this X pancake on top!' ToolTip='Push the word length of X on top of the stack, i.e. "wonderful" would push 9.'/>
+                <ListViewItem Content='Eat the pancake on top!' ToolTip='Pop the top value off of the stack, and discard it.'/>
+                <ListViewItem Content='Put the top pancakes together!' ToolTip='Pop off the top two values, add them, and push the result.'/>
+                <ListViewItem Content='Give me a pancake!' ToolTip='Input a number value and push it on the stack.'/>
+                <ListViewItem Content='How about a hotcake?' ToolTip='Input an ASCII character and push its value on the stack.'/>
+                <ListViewItem Content='Show me a pancake!' ToolTip="Output the top value on the stack as an ASCII character, but don't pop it."/>
+                <ListViewItem Content='Show me a numeric pancake!' ToolTip="Output the top value on the stack as a number, but don't pop it."/>
+                <ListViewItem Content='Take from the top pancakes!' ToolTip='Pop off the top two values, subtract the second one from the first one, and push the result.'/>
+                <ListViewItem Content='Flip the pancakes on top!' ToolTip='Pop off the top two values, swap them, and push them back.'/>
+                <ListViewItem Content='Put another pancake on top!' ToolTip='Pop off the top value and push it twice.'/>
+                <ListViewItem Content='[label]' ToolTip='Defines a label to go back to (Can also define a comment, if needed). When you go back to the label, it goes to the line number (1 indexed) of the top value of the stack when the label was defined.'/>
+                <ListViewItem Content="If the pancake isn't tasty, go over to &quot;label&quot;." ToolTip='Go to label [label] if the top value is 0.'/>
+                <ListViewItem Content='If the pancake is tasty, go over to "label".' ToolTip='Same as above, except go if the top value is not 0.'/>
+                <ListViewItem Content='Put syrup on the pancakes!' ToolTip='Increment all stack values.'/>
+                <ListViewItem Content='Put butter on the pancakes!' ToolTip='Increment only the top stack value.'/>
+                <ListViewItem Content='Take off the syrup!' ToolTip='Decrement all stack values.'/>
+                <ListViewItem Content='Take off the butter!' ToolTip='Decrement only the top stack value.'/>
+                <ListViewItem Content='Eat all of the pancakes!' ToolTip='Terminate the program. '/>
+
+            </ListView>
+        </Grid>
+    </Grid>
 </UserControl>
