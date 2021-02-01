@@ -14,12 +14,8 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
-        <DockPanel Grid.Column="0">
-            <TextBlock DockPanel.Dock="Bottom"
-                       DataContext="{Binding File.Document}"
-                       Text="{Binding FileName}"/>
 
-            <TextBox DockPanel.Dock="Top"
+        <TextBox Grid.Column="0"
                      VerticalScrollBarVisibility="Visible"
                      DataContext="{Binding Editor}"
                      FontFamily="{Binding Format.Family}"
@@ -30,7 +26,6 @@
                      AcceptsReturn="True"
                      AcceptsTab="True"
                      Text="{Binding Document.Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-        </DockPanel>
 
         <GridSplitter Grid.Column="1"
               HorizontalAlignment="Center"
@@ -45,7 +40,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            
+
             <TextBlock Grid.Row="0" Text="List of instructions" FontSize="20"/>
 
             <ListView Grid.Row="1" SelectedItem="{Binding Editor.HelpBoxInstruction}">
