@@ -7,8 +7,6 @@
              xmlns:viewmodel="clr-namespace:IDE.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-
-
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -22,7 +20,9 @@
                     <DataTemplate>
                         <TextBlock Text="{Binding Text}" 
                                    Background="{Binding BackgroundColor, UpdateSourceTrigger=PropertyChanged}" 
-                                   Foreground="{Binding ForegroundColor, UpdateSourceTrigger=PropertyChanged}"/>
+                                   Foreground="{Binding ForegroundColor, UpdateSourceTrigger=PropertyChanged}"
+                                   FontFamily="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.Editor.Format.Family}"
+                                   FontSize="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.Editor.Format.Size}"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

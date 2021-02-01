@@ -23,7 +23,7 @@ namespace IDE.ViewModels
         public EditorViewModel(DocumentModel document)
         {
             Document = document;         
-            Format = new FormatModel() { Family = new FontFamily("Consolas"), Size = 18 };
+            Format = new FormatModel() { Family = new FontFamily("Consolas"), Size = 12 };
             FormatCommand = new RelayCommand(OpenFormatDialog);
             WrapCommand = new RelayCommand(ToggleWrap);            
         }
