@@ -98,8 +98,8 @@ namespace IDE.ViewModels
             else if (!_isTaskWaitingForInput)
             {
                 DebugDocument.Lines[_previousInstruction].BackgroundColor = Brushes.Transparent;
-                
-                
+                DebugDocument.Lines[_previousInstruction].ForegroundColor = Brushes.White;
+
                 _cancellationTokenSource = new CancellationTokenSource();
                 CancellationToken cancellationToken = _cancellationTokenSource.Token;
                 _interpreterTask = Task.Factory.StartNew(() =>

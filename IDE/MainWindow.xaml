@@ -17,6 +17,16 @@
         <KeyBinding Modifiers="Shift" Key="F5" Command="{Binding Debugger.EndCurrentTaskCommand}"/>
         <KeyBinding Key="F10" Command="{Binding Debugger.NextInstructionCommand}"/>
     </Window.InputBindings>
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#3F3F46"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+        <Style TargetType="MenuItem">
+            <Setter Property="Background" Value="#1B1B1C"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+    </Window.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -32,7 +42,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Menu Grid.Row="0" Grid.Column="0">
+        <Menu Grid.Row="0" Grid.Column="0" Background="#333333" Foreground="White">
             <Menu.Items>
                 <MenuItem Header="File" DataContext="{Binding File}">
                     <MenuItem Header="New" Command="{Binding NewCommand}"/>
@@ -50,7 +60,7 @@
             </Menu.Items>
         </Menu>
 
-        <StackPanel Grid.Row="1" Grid.Column="0" DataContext="{Binding Debugger}" Orientation="Horizontal">
+        <StackPanel Grid.Row="1" Grid.Column="0" DataContext="{Binding Debugger}" Orientation="Horizontal" Background="#333333">
             <Button Content="Run" Command="{Binding RunInterpreterCommand}"/>
             <Button Content="Stop" Command="{Binding EndCurrentTaskCommand}"/>
             <Button Content="Next Instruction" Command="{Binding NextInstructionCommand}"/>
@@ -67,7 +77,7 @@
               />
 
         <DockPanel Grid.Row="4" Grid.Column="0">
-            <TextBlock DockPanel.Dock="Top" Text="Console:"/>
+            <TextBlock DockPanel.Dock="Top" Text="Console:" Background="#333333" Foreground="White"/>
             <TextBox DockPanel.Dock="Bottom" 
                     VerticalScrollBarVisibility="Auto"
                      FontFamily="Consolas"
@@ -75,6 +85,8 @@
                      TextWrapping="Wrap"
                      AcceptsReturn="True"
                      AcceptsTab="True"
+                     Background="#25292C"
+                     Foreground="White"
                      Text="{Binding Debugger.Console.ConsoleText}"/>
         </DockPanel>
 

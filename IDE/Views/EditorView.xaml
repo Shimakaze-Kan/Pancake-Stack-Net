@@ -25,6 +25,8 @@
                      TextWrapping="{Binding Format.Wrap}"
                      AcceptsReturn="True"
                      AcceptsTab="True"
+                     Background="#25292C"
+                     Foreground="White"
                      Text="{Binding Document.Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
         <GridSplitter Grid.Column="1"
@@ -41,9 +43,9 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0" Text="List of instructions" FontSize="20"/>
+            <TextBlock Grid.Row="0" Text="List of instructions" FontSize="20" Background="#252526" Foreground="White"/>
 
-            <ListView Grid.Row="1" SelectedItem="{Binding Editor.HelpBoxInstruction}">
+            <ListView Grid.Row="1" SelectedItem="{Binding Editor.HelpBoxInstruction}" Background="#252526" Foreground="White">
                 <ListViewItem Content='Put this X pancake on top!' ToolTip='Push the word length of X on top of the stack, i.e. "wonderful" would push 9.'/>
                 <ListViewItem Content='Eat the pancake on top!' ToolTip='Pop the top value off of the stack, and discard it.'/>
                 <ListViewItem Content='Put the top pancakes together!' ToolTip='Pop off the top two values, add them, and push the result.'/>

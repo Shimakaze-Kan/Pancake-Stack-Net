@@ -10,6 +10,8 @@ namespace IDE.Models
 {
     public class DebugDocumentModel
     {
+        private readonly SolidColorBrush SolidColorBrush = (SolidColorBrush) new BrushConverter().ConvertFrom("#FFEC8B");
+
         private int _linePointer;
 
         public int LinePointer
@@ -20,7 +22,8 @@ namespace IDE.Models
                 if (value < Lines.Count)
                 {
                     _linePointer = value;
-                    Lines[_linePointer].BackgroundColor = Brushes.Yellow;
+                    Lines[_linePointer].BackgroundColor = SolidColorBrush;
+                    Lines[_linePointer].ForegroundColor = Brushes.Black;
                 }
             }
         }

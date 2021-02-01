@@ -17,11 +17,12 @@
         </Grid.ColumnDefinitions>
 
         <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Visible">
-            <ItemsControl ItemsSource="{Binding Debugger.DebugDocument.Lines}">
+            <ItemsControl ItemsSource="{Binding Debugger.DebugDocument.Lines}" Background="#25292C" Foreground="White">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Text}" 
-                               Background="{Binding BackgroundColor, UpdateSourceTrigger=PropertyChanged}" />
+                                   Background="{Binding BackgroundColor, UpdateSourceTrigger=PropertyChanged}" 
+                                   Foreground="{Binding ForegroundColor, UpdateSourceTrigger=PropertyChanged}"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
@@ -42,20 +43,46 @@
             </Grid.ColumnDefinitions>
 
 
-            <ListView Grid.Column="0" ItemsSource="{Binding Debugger.Debugger.Stack, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            <!--<ListView Grid.Column="0" ItemsSource="{Binding Debugger.Debugger.Stack, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="#252526" Foreground="White">
+                <ListViewItem>
+                    <ListViewItem Content="{Binding}"/>
+                </ListViewItem>
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="Stack" DisplayMemberBinding="{Binding}"/>
                     </GridView>
+                    
                 </ListView.View>
-            </ListView>
-            <ListView Grid.Column="1" ItemsSource="{Binding Debugger.Debugger.Label, UpdateSourceTrigger=PropertyChanged}">
+            </ListView>-->
+
+            <StackPanel Grid.Column="0" Background="#252526">
+                <TextBlock Text="Stack" FontSize="20" Foreground="White"/>
+                <ItemsControl ItemsSource="{Binding Debugger.Debugger.Stack, UpdateSourceTrigger=PropertyChanged}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" Foreground="White"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+            <!--<ListView Grid.Column="1" ItemsSource="{Binding Debugger.Debugger.Label, UpdateSourceTrigger=PropertyChanged}" Background="#252526" Foreground="White">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="Labels" DisplayMemberBinding="{Binding}"/>
                     </GridView>
                 </ListView.View>
-            </ListView>
+            </ListView>-->
+
+            <StackPanel Grid.Column="1" Background="#252526">
+                <TextBlock Text="Labels" FontSize="20" Foreground="White"/>
+                <ItemsControl ItemsSource="{Binding Debugger.Debugger.Label, UpdateSourceTrigger=PropertyChanged}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" Foreground="White"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
         </Grid>
     </Grid>
 </UserControl>
