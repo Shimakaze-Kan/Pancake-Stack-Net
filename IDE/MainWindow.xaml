@@ -63,10 +63,10 @@
         </Menu>
 
         <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Background="#333333">
-            <Button Content="Run" Command="{Binding Debugger.RunInterpreterCommand}"/>
-            <Button Content="Stop" Command="{Binding Debugger.EndCurrentTaskCommand}"/>
-            <Button Content="Next Instruction" Command="{Binding Debugger.NextInstructionCommand}"/>
-            <Button Content="Compile" Command="{Binding Compiler.CompileCommand}"/>
+            <Button Content="Run" Command="{Binding Debugger.RunInterpreterCommand}" Style="{StaticResource BlackButton}"/>
+            <Button Content="Stop" Command="{Binding Debugger.EndCurrentTaskCommand}" Style="{StaticResource BlackButton}"/>
+            <Button Content="Next Instruction" Command="{Binding Debugger.NextInstructionCommand}" Style="{StaticResource BlackButton}"/>
+            <Button Content="Compile" Command="{Binding Compiler.CompileCommand}" Style="{StaticResource BlackButton}"/>
         </StackPanel>
 
         <ContentControl Grid.Row="2" Grid.Column="0" Content="{Binding Debugger.CurrentView, UpdateSourceTrigger=PropertyChanged}"/>
