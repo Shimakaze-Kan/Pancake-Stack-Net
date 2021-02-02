@@ -83,8 +83,11 @@ namespace IDE
                         WaitHandle.WaitOne();
                     }
 
-                    if(!ct.IsCancellationRequested)
+                    if (!ct.IsCancellationRequested)
+                    {
                         PancakeStack.Push(Convert.ToInt32(Input));
+                        Input = "";
+                    }
                     break;
                 case "How about a hotcake?":
                     while (string.IsNullOrEmpty(Input))
