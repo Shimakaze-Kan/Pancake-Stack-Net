@@ -7,7 +7,7 @@
         xmlns:viewmodel="clr-namespace:IDE.ViewModels"
         xmlns:converter="clr-namespace:IDE.Converters"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" Background="#333333">
 
     <Window.DataContext>
         <viewmodel:MainViewModel/>
@@ -20,14 +20,6 @@
     </Window.InputBindings>
     <Window.Resources>
         <converter:BottomBarColorConverter x:Key="BottomBarColorConverter"/>
-        <Style TargetType="Button">
-            <Setter Property="Background" Value="#3F3F46"/>
-            <Setter Property="Foreground" Value="White"/>
-        </Style>
-        <Style TargetType="MenuItem">
-            <Setter Property="Background" Value="#1B1B1C"/>
-            <Setter Property="Foreground" Value="White"/>
-        </Style>
     </Window.Resources>
 
     <Grid>
@@ -44,20 +36,20 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Menu Grid.Row="0" Grid.Column="0" Background="#333333" Foreground="White">
+        <Menu Grid.Row="0" Grid.Column="0" Background="#333333" Foreground="White" Margin="0,0,0,10">
             <Menu.Items>
-                <MenuItem Header="File" DataContext="{Binding File}">
-                    <MenuItem Header="New" Command="{Binding NewCommand}"/>
-                    <MenuItem Header="Open" Command="{Binding OpenCommand}"/>
-                    <MenuItem Header="Save" Command="{Binding SaveCommand}"/>
-                    <MenuItem Header="Save As" Command="{Binding SaveAsCommand}"/>
+                <MenuItem Header="File" DataContext="{Binding File}" Template="{StaticResource BlackMenuItem}">
+                    <MenuItem Header="New" Command="{Binding NewCommand}" Template="{StaticResource BlackMenuItem}"/>
+                    <MenuItem Header="Open" Command="{Binding OpenCommand}" Template="{StaticResource BlackMenuItem}"/>
+                    <MenuItem Header="Save" Command="{Binding SaveCommand}" Template="{StaticResource BlackMenuItem}"/>
+                    <MenuItem Header="Save As" Command="{Binding SaveAsCommand}" Template="{StaticResource BlackMenuItem}"/>
                 </MenuItem>
-                <MenuItem Header="Format" DataContext="{Binding Editor}">
-                    <MenuItem Header="Format" Command="{Binding FormatCommand}"/>
-                    <MenuItem Header="Word Wrap" Command="{Binding WrapCommand}"/>
+                <MenuItem Header="Format" DataContext="{Binding Editor}" Template="{StaticResource BlackMenuItem}">
+                    <MenuItem Header="Format" Command="{Binding FormatCommand}" Template="{StaticResource BlackMenuItem}"/>
+                    <MenuItem Header="Word Wrap" Command="{Binding WrapCommand}" Template="{StaticResource BlackMenuItem}"/>
                 </MenuItem>
-                <MenuItem Header="Help" DataContext="{Binding Help}">
-                    <MenuItem Header="About" Command="{Binding HelpCommand}"/>
+                <MenuItem Header="Help" DataContext="{Binding Help}" Template="{StaticResource BlackMenuItem}">
+                    <MenuItem Header="About" Command="{Binding HelpCommand}" Template="{StaticResource BlackMenuItem}"/>
                 </MenuItem>
             </Menu.Items>
         </Menu>
