@@ -17,6 +17,7 @@
         <KeyBinding Modifiers="Ctrl" Key="S" Command="{Binding File.SaveCommand}"/>
         <KeyBinding Modifiers="Shift" Key="F5" Command="{Binding Debugger.EndCurrentTaskCommand}"/>
         <KeyBinding Key="F10" Command="{Binding Debugger.NextInstructionCommand}"/>
+        <KeyBinding Modifiers="Ctrl" Key="B" Command="{Binding Compiler.CompileCommand}"/>
     </Window.InputBindings>
     <Window.Resources>
         <converter:BottomBarColorConverter x:Key="BottomBarColorConverter"/>
@@ -55,10 +56,10 @@
         </Menu>
 
         <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Background="#333333">
-            <Button Content="Run" Command="{Binding Debugger.RunInterpreterCommand}" Style="{StaticResource BlackButton}"/>
-            <Button Content="Stop" Command="{Binding Debugger.EndCurrentTaskCommand}" Style="{StaticResource BlackButton}"/>
-            <Button Content="Next Instruction" Command="{Binding Debugger.NextInstructionCommand}" Style="{StaticResource BlackButton}"/>
-            <Button Content="Compile" Command="{Binding Compiler.CompileCommand}" Style="{StaticResource BlackButton}"/>
+            <Button Content="Run" Command="{Binding Debugger.RunInterpreterCommand}" Style="{StaticResource BlackButton}" ToolTip="F5"/>
+            <Button Content="Stop" Command="{Binding Debugger.EndCurrentTaskCommand}" Style="{StaticResource BlackButton}" ToolTip="Shift+F5"/>
+            <Button Content="Next Instruction" Command="{Binding Debugger.NextInstructionCommand}" Style="{StaticResource BlackButton}" ToolTip="F10"/>
+            <Button Content="Compile" Command="{Binding Compiler.CompileCommand}" Style="{StaticResource BlackButton}" ToolTip="Ctrl+B"/>
         </StackPanel>
 
         <ContentControl Grid.Row="2" Grid.Column="0" Content="{Binding Debugger.CurrentView, UpdateSourceTrigger=PropertyChanged}"/>
