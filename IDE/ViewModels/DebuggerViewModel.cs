@@ -136,6 +136,8 @@ namespace IDE.ViewModels
             {
                 _isTaskRunning = false;
             }
+
+            _isTaskWaitingForInput = false;
         }
 
         private void AddHandlersToInterpreterThread()
