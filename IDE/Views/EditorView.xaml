@@ -16,6 +16,7 @@
 
 
         <TextBox Grid.Column="0"
+                     Style="{StaticResource OrangeBorderTextBox}"
                      VerticalScrollBarVisibility="Visible"
                      DataContext="{Binding Editor}"
                      FontFamily="{Binding Format.Family}"

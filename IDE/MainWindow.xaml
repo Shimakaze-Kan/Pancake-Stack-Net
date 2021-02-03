@@ -74,7 +74,8 @@
         <DockPanel Grid.Row="4" Grid.Column="0">
             <TextBlock DockPanel.Dock="Top" Text="Console:" Background="#333333" Foreground="White"/>
             <TextBox DockPanel.Dock="Bottom" 
-                    VerticalScrollBarVisibility="Auto"
+                     Style="{StaticResource OrangeBorderTextBox}"
+                     VerticalScrollBarVisibility="Auto"
                      FontFamily="Consolas"
                      FontSize="{Binding Editor.Format.Size}"
                      TextWrapping="Wrap"
