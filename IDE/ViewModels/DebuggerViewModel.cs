@@ -48,6 +48,11 @@ namespace IDE.ViewModels
             set { OnPropertyChanged(ref _isDebuggingMode, value); }
         }
 
+        public bool IsTaskWaitingForInput
+        {
+            get { return _isTaskWaitingForInput; }
+            set { OnPropertyChanged(ref _isTaskWaitingForInput, value); }
+        }
 
         public DebuggerViewModel(DocumentModel document, DebugDocumentModel debugDocumentModel, ConsoleModel console, DebuggerModel debugger, object currentView, EditorView editorView, EditorDebugView editorDebugView)
         {
@@ -61,12 +66,12 @@ namespace IDE.ViewModels
             _editorDebugView = editorDebugView;
 
             _isTaskRunning = false;
-            _isTaskWaitingForInput = false;
+            IsTaskWaitingForInput = false;
             IsDebuggingMode = false;
             _cancellationTokenSource = new CancellationTokenSource();
 
             RunInterpreterCommand = new RelayCommand(RunInterpreter, () => !_isTaskRunning && !string.IsNullOrEmpty(Document.Text) && !IsDebuggingMode);
-            SendInputCommand = new RelayCommand(SendInput, () => _isTaskWaitingForInput);
+            SendInputCommand = new RelayCommand(SendInput, () => IsTaskWaitingForInput);
             EndCurrentTaskCommand = new RelayCommand(EndCurrentInterpreterTask, () => _isTaskRunning || IsDebuggingMode);
             NextInstructionCommand = new RelayCommand(NextInstruction, () => !string.IsNullOrEmpty(Document.Text) && !_isTaskRunning);
         }
@@ -101,7 +106,7 @@ namespace IDE.ViewModels
                 Debugger.Stack = null;
                 Debugger.Label = null;
             }
-            else if (!_isTaskWaitingForInput)
+            else if (!IsTaskWaitingForInput)
             {
                 DebugDocument.Lines[_previousInstruction].BackgroundColor = Brushes.Transparent;
                 DebugDocument.Lines[_previousInstruction].ForegroundColor = Brushes.White;
@@ -117,7 +122,7 @@ namespace IDE.ViewModels
         {
             Console.ConsoleText += ">" + Console.InputText + Environment.NewLine;
             _embeddedInterpreter.Input = Console.InputText + Environment.NewLine;
-            _isTaskWaitingForInput = false;
+            IsTaskWaitingForInput = false;
             _embeddedInterpreter.WaitHandle.Set();
             Console.InputText = "";            
         }
@@ -137,7 +142,7 @@ namespace IDE.ViewModels
                 _isTaskRunning = false;
             }
 
-            _isTaskWaitingForInput = false;
+            IsTaskWaitingForInput = false;
         }
 
         private void AddHandlersToInterpreterThread()
@@ -151,7 +156,7 @@ namespace IDE.ViewModels
                     else
                         Console.ConsoleText += a.LineOutput + Environment.NewLine;
                 });
-            _embeddedInterpreter.WaitingForInputEvent += new EventHandler((o, a) => _isTaskWaitingForInput = true);
+            _embeddedInterpreter.WaitingForInputEvent += new EventHandler((o, a) => IsTaskWaitingForInput = true);
             _embeddedInterpreter.PancakeStackChangedEvent += new EventHandler<Stack<int>>((o, a) => Debugger.Stack = a.ToList());
             _embeddedInterpreter.LabelDictionaryChangedEvent += new EventHandler<Dictionary<string, int>>((_, a) => Debugger.Label = a.Select(x => new KeyValuePair<string, int>(x.Key, x.Value + 2)).ToList());
             _embeddedInterpreter.EndOfExecutionEvent += new EventHandler((o, a) => EndCurrentInterpreterTask());

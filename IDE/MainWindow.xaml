@@ -21,6 +21,7 @@
     </Window.InputBindings>
     <Window.Resources>
         <converter:BottomBarColorConverter x:Key="BottomBarColorConverter"/>
+        <converter:BoolToVisiblilityConverter x:Key="BoolToVisiblilityConverter"/>
     </Window.Resources>
 
     <Grid>
@@ -33,6 +34,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="0.3*"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
@@ -87,13 +89,20 @@
                      Text="{Binding Debugger.Console.ConsoleText}"/>
         </DockPanel>
 
-        <TextBox Grid.Row="5" Grid.Column="0" Text="{Binding Debugger.Console.InputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+        <StackPanel Grid.Row="5" Grid.Column="0" Orientation="Horizontal">
+            <TextBlock Text="Input:" Foreground="White"/>
+            <TextBlock Text="WAITING FOR INPUT" Foreground="#FF9912" Visibility="{Binding Debugger.IsTaskWaitingForInput, Converter={StaticResource BoolToVisiblilityConverter}, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,0"/>
+        </StackPanel>
+        
+        <TextBox Grid.Row="6" Grid.Column="0" Text="{Binding Debugger.Console.InputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 local:FocusExtension.IsFocused="{Binding Debugger.IsTaskWaitingForInput, UpdateSourceTrigger=PropertyChanged}"
+                 Style="{StaticResource OrangeBorderTextBox}">
             <TextBox.InputBindings>
                 <KeyBinding Command="{Binding Debugger.SendInputCommand}" Key="Enter"/>
             </TextBox.InputBindings>
         </TextBox>
 
-        <TextBlock Grid.Row="6" Grid.Column="0"
+        <TextBlock Grid.Row="7" Grid.Column="0"
                    Text="{Binding File.Document.FileName}"
                    Background="{Binding Debugger.IsDebuggingMode, Converter={StaticResource BottomBarColorConverter}}" 
                    Foreground="White"
