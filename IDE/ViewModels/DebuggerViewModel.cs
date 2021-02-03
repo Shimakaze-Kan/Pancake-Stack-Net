@@ -117,9 +117,9 @@ namespace IDE.ViewModels
         {
             Console.ConsoleText += ">" + Console.InputText + Environment.NewLine;
             _embeddedInterpreter.Input = Console.InputText + Environment.NewLine;
-            _embeddedInterpreter.WaitHandle.Set();
-            Console.InputText = "";
             _isTaskWaitingForInput = false;
+            _embeddedInterpreter.WaitHandle.Set();
+            Console.InputText = "";            
         }
 
         private void EndCurrentInterpreterTask()
