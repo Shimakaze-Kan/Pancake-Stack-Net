@@ -18,6 +18,8 @@
         <KeyBinding Modifiers="Shift" Key="F5" Command="{Binding Debugger.EndCurrentTaskCommand}"/>
         <KeyBinding Key="F10" Command="{Binding Debugger.NextInstructionCommand}"/>
         <KeyBinding Modifiers="Ctrl" Key="B" Command="{Binding Compiler.CompileCommand}"/>
+        <MouseBinding Gesture="{x:Static local:MouseWheelGesture.CtrlDown}" Command="{Binding Editor.ZoomOutEditorCommand}"/>
+        <MouseBinding Gesture="{x:Static local:MouseWheelGesture.CtrlUp}" Command="{Binding Editor.ZoomInEditorCommand}"/>
     </Window.InputBindings>
     <Window.Resources>
         <converter:BottomBarColorConverter x:Key="BottomBarColorConverter"/>

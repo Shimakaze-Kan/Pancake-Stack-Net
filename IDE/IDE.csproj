@@ -67,6 +67,7 @@
     <Compile Include="Models\ConsoleModel.cs" />
     <Compile Include="Models\DebugDocumentModel.cs" />
     <Compile Include="Models\DebuggerModel.cs" />
+    <Compile Include="MouseWheelGesture.cs" />
     <Compile Include="OutputEventArg.cs" />
     <Compile Include="RelayCommand.cs" />
     <Compile Include="TextLine.cs" />

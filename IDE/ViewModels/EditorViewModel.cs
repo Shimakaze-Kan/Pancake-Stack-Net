@@ -16,6 +16,8 @@ namespace IDE.ViewModels
     {
         public ICommand FormatCommand { get; }
         public ICommand WrapCommand { get; }
+        public ICommand ZoomInEditorCommand { get; }
+        public ICommand ZoomOutEditorCommand { get; }
         public FormatModel Format { get; set; }
         public DocumentModel Document { get; set; }
         public ListViewItem HelpBoxInstruction { get { return null; } set { Document.Text += value.Content + Environment.NewLine; } }
@@ -25,7 +27,9 @@ namespace IDE.ViewModels
             Document = document;         
             Format = new FormatModel() { Family = new FontFamily("Consolas"), Size = 12 };
             FormatCommand = new RelayCommand(OpenFormatDialog);
-            WrapCommand = new RelayCommand(ToggleWrap);            
+            WrapCommand = new RelayCommand(ToggleWrap);
+            ZoomInEditorCommand = new RelayCommand(ZoomInEditor);
+            ZoomOutEditorCommand = new RelayCommand(ZoomOutEditor);
         }
 
         private void ToggleWrap()
@@ -47,6 +51,18 @@ namespace IDE.ViewModels
                 DataContext = Format
             };
             formatDialog.ShowDialog();
+        }
+
+        private void ZoomInEditor()
+        {
+            if (Format.Size < 30)
+                Format.Size++;
+        }
+
+        private void ZoomOutEditor()
+        {
+            if (Format.Size > 5)
+                Format.Size--;
         }
     }
 }
