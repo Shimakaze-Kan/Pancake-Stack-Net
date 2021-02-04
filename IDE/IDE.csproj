@@ -59,6 +59,9 @@
     </Compile>
     <Compile Include="Converters\BoolToVisiblilityConverter.cs" />
     <Compile Include="Converters\BottomBarColorConverter.cs" />
+    <Compile Include="Converters\WindowStateMaximizedToVisibleConverter.cs" />
+    <Compile Include="Converters\WindowStateMinimizedToVisibleConverter.cs" />
+    <Compile Include="Converters\WindowStateToCorrectMarginConverter.cs" />
     <Compile Include="FocusExtension.cs" />
     <Compile Include="FormatDialog.xaml.cs">
       <DependentUpon>FormatDialog.xaml</DependentUpon>
@@ -78,6 +81,7 @@
     <Compile Include="ViewModels\FileViewModel.cs" />
     <Compile Include="ViewModels\HelpViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Views\EditorDebugView.xaml.cs">
       <DependentUpon>EditorDebugView.xaml</DependentUpon>
     </Compile>

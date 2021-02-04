@@ -7,7 +7,9 @@
         xmlns:viewmodel="clr-namespace:IDE.ViewModels"
         xmlns:converter="clr-namespace:IDE.Converters"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Background="#333333">
+        Title="MainWindow" Height="450" Width="800" Background="#333333"
+        WindowState="{Binding MainWindow.CurrentState, Mode=TwoWay}"
+        WindowStyle="None">
 
     <Window.DataContext>
         <viewmodel:MainViewModel/>
@@ -24,9 +26,15 @@
     <Window.Resources>
         <converter:BottomBarColorConverter x:Key="BottomBarColorConverter"/>
         <converter:BoolToVisiblilityConverter x:Key="BoolToVisiblilityConverter"/>
+        <converter:WindowStateMaximizedToVisibleConverter x:Key="WindowStateMaximizedToVisibleConverter"/>
+        <converter:WindowStateMinimizedToVisibleConverter x:Key="WindowStateMinimizedToVisibleConverter"/>
+        <converter:WindowStateToCorrectMarginConverter x:Key="WindowStateToCorrectMarginConverter"/>
     </Window.Resources>
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="50" ResizeBorderThickness="5" />
+    </WindowChrome.WindowChrome>
 
-    <Grid>
+    <Grid Margin="{Binding MainWindow.CurrentState, Converter={StaticResource WindowStateToCorrectMarginConverter}}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
@@ -41,7 +49,15 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Menu Grid.Row="0" Grid.Column="0" Background="#333333" Foreground="White" Margin="0,0,0,10">
+        <Grid Grid.Row="0" Grid.Column="0" Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+        <Menu Grid.Column="0" Background="#333333" Foreground="White">
             <Menu.Items>
                 <MenuItem Header="File" DataContext="{Binding File}" Template="{StaticResource BlackMenuItem}">
                     <MenuItem Header="New" Command="{Binding NewCommand}" Template="{StaticResource BlackMenuItem}"/>
@@ -58,6 +74,59 @@
                 </MenuItem>
             </Menu.Items>
         </Menu>
+
+            <Button Style="{StaticResource TitleBarButton}" 
+                    Foreground="White" 
+                    Command="{Binding MainWindow.MinimizeCommand}"
+                    Grid.Column="2">
+                    <Path
+			            Width="46"
+			            Height="15"
+			            Data="M 18,7.5 H 28"
+			            Stroke="{Binding Path=Foreground,
+							 RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+			            StrokeThickness="1" />
+            </Button>
+            <Button Style="{StaticResource TitleBarButton}"
+                    Foreground="White"
+                    Command="{Binding MainWindow.MaximizeCommand}"
+                    Grid.Column="3"
+                    Visibility="{Binding MainWindow.CurrentState, Converter={StaticResource WindowStateMinimizedToVisibleConverter}}">
+                <Path
+			        Width="46"
+              
+			        Data="M 28,10 L17,10 L17,1 28,1 Z"
+			        Stroke="{Binding Path=Foreground,
+							 RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+			        StrokeThickness="1" />
+            </Button>
+            <Button Style="{StaticResource TitleBarButton}"
+                    Foreground="White"
+                    Command="{Binding MainWindow.NormalCommand}"
+                    Grid.Column="3"
+                    Visibility="{Binding MainWindow.CurrentState, Converter={StaticResource WindowStateMaximizedToVisibleConverter}}">
+                <Path
+			        Width="46"
+              
+			        Data="M 15.5,5.5 H 26.5 V 13.5 H 15.5 Z M 17.5,5.5 V 2.5 H 28.5 V 11.5 H 26.5"
+			        Stroke="{Binding Path=Foreground,
+							 RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+			        StrokeThickness="1" />
+            </Button>
+            <Button Style="{StaticResource TitleBarCloseButton}"
+                    Foreground="White"
+                    Grid.Column="4"
+                    Command="{Binding MainWindow.CloseCommand}">
+                <Path
+			        Width="46"
+			        Data="M 18,1 28,12 M 18,12 28,1"
+			        Stroke="{Binding Path=Foreground,
+							 RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+			        StrokeThickness="1" />
+            </Button>
+                    
+
+        </Grid>
 
         <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Background="#333333">
             <Button Content="Run" Command="{Binding Debugger.RunInterpreterCommand}" Style="{StaticResource BlackButton}" ToolTip="F5"/>
