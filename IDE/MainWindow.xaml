@@ -11,6 +11,8 @@
         WindowState="{Binding MainWindow.CurrentState, Mode=TwoWay}"
         WindowStyle="None"        
         AllowsTransparency="True"
+        BorderBrush="#FF9912"
+        BorderThickness="1"
         MaxWidth="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Width}"
         MaxHeight="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Height}">
 
@@ -139,14 +141,14 @@
 
         </Grid>
 
-        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Background="#333333">
+        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Background="#333333" Margin="5,0,5,0">
             <Button Content="Run" Command="{Binding Debugger.RunInterpreterCommand}" Style="{StaticResource BlackButton}" ToolTip="F5"/>
             <Button Content="Stop" Command="{Binding Debugger.EndCurrentTaskCommand}" Style="{StaticResource BlackButton}" ToolTip="Shift+F5"/>
             <Button Content="Next Instruction" Command="{Binding Debugger.NextInstructionCommand}" Style="{StaticResource BlackButton}" ToolTip="F10"/>
             <Button Content="Compile" Command="{Binding Compiler.CompileCommand}" Style="{StaticResource BlackButton}" ToolTip="Ctrl+B"/>
         </StackPanel>
 
-        <ContentControl Grid.Row="2" Grid.Column="0" Content="{Binding Debugger.CurrentView, UpdateSourceTrigger=PropertyChanged}"/>
+        <ContentControl Grid.Row="2" Grid.Column="0" Content="{Binding Debugger.CurrentView, UpdateSourceTrigger=PropertyChanged}" Margin="5,0,5,0"/>
 
         <GridSplitter Grid.Row="3" Grid.Column="0"
               HorizontalAlignment="Stretch"
@@ -156,7 +158,7 @@
               Height="5"
               />
 
-        <DockPanel Grid.Row="4" Grid.Column="0">
+        <DockPanel Grid.Row="4" Grid.Column="0" Margin="5,0,5,0">
             <TextBlock DockPanel.Dock="Top" Text="Console:" Background="#333333" Foreground="White"/>
             <TextBox DockPanel.Dock="Bottom" 
                      Style="{StaticResource OrangeBorderTextBox}"
@@ -171,14 +173,15 @@
                      Text="{Binding Debugger.Console.ConsoleText}"/>
         </DockPanel>
 
-        <StackPanel Grid.Row="5" Grid.Column="0" Orientation="Horizontal">
+        <StackPanel Grid.Row="5" Grid.Column="0" Orientation="Horizontal" Margin="5,0,5,0">
             <TextBlock Text="Input:" Foreground="White"/>
             <TextBlock Text="WAITING FOR INPUT" Foreground="#FF9912" Visibility="{Binding Debugger.IsTaskWaitingForInput, Converter={StaticResource BoolToVisiblilityConverter}, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,0"/>
         </StackPanel>
 
         <TextBox Grid.Row="6" Grid.Column="0" Text="{Binding Debugger.Console.InputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                  local:FocusExtension.IsFocused="{Binding Debugger.IsTaskWaitingForInput, UpdateSourceTrigger=PropertyChanged}"
-                 Style="{StaticResource OrangeBorderTextBox}">
+                 Style="{StaticResource OrangeBorderTextBox}"
+                 Margin="5,0,5,5">
             <TextBox.InputBindings>
                 <KeyBinding Command="{Binding Debugger.SendInputCommand}" Key="Enter"/>
             </TextBox.InputBindings>
