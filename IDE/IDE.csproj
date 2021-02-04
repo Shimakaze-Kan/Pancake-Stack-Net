@@ -59,6 +59,7 @@
     </Compile>
     <Compile Include="Converters\BoolToVisiblilityConverter.cs" />
     <Compile Include="Converters\BottomBarColorConverter.cs" />
+    <Compile Include="Converters\WindowStateMaximizedToResizeModeConverter.cs" />
     <Compile Include="Converters\WindowStateMaximizedToVisibleConverter.cs" />
     <Compile Include="Converters\WindowStateMinimizedToVisibleConverter.cs" />
     <Compile Include="Converters\WindowStateToCorrectMarginConverter.cs" />

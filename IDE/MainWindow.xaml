@@ -9,7 +9,10 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800" Background="#333333"
         WindowState="{Binding MainWindow.CurrentState, Mode=TwoWay}"
-        WindowStyle="None">
+        WindowStyle="None"        
+        AllowsTransparency="True"
+        MaxWidth="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Width}"
+        MaxHeight="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Height}">
 
     <Window.DataContext>
         <viewmodel:MainViewModel/>
@@ -29,12 +32,13 @@
         <converter:WindowStateMaximizedToVisibleConverter x:Key="WindowStateMaximizedToVisibleConverter"/>
         <converter:WindowStateMinimizedToVisibleConverter x:Key="WindowStateMinimizedToVisibleConverter"/>
         <converter:WindowStateToCorrectMarginConverter x:Key="WindowStateToCorrectMarginConverter"/>
+        <converter:WindowStateMaximizedToResizeModeConverter x:Key="WindowStateMaximizedToResizeModeConverter"/>
     </Window.Resources>
-    <WindowChrome.WindowChrome>
-        <WindowChrome CaptionHeight="50" ResizeBorderThickness="5" />
-    </WindowChrome.WindowChrome>
+    <Window.ResizeMode>
+        <Binding Path="MainWindow.CurrentState" Converter="{StaticResource WindowStateMaximizedToResizeModeConverter}"/>
+    </Window.ResizeMode>
 
-    <Grid Margin="{Binding MainWindow.CurrentState, Converter={StaticResource WindowStateToCorrectMarginConverter}}">
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
@@ -57,29 +61,36 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-        <Menu Grid.Column="0" Background="#333333" Foreground="White">
-            <Menu.Items>
-                <MenuItem Header="File" DataContext="{Binding File}" Template="{StaticResource BlackMenuItem}">
-                    <MenuItem Header="New" Command="{Binding NewCommand}" Template="{StaticResource BlackMenuItem}"/>
-                    <MenuItem Header="Open" Command="{Binding OpenCommand}" Template="{StaticResource BlackMenuItem}"/>
-                    <MenuItem Header="Save" Command="{Binding SaveCommand}" Template="{StaticResource BlackMenuItem}"/>
-                    <MenuItem Header="Save As" Command="{Binding SaveAsCommand}" Template="{StaticResource BlackMenuItem}"/>
-                </MenuItem>
-                <MenuItem Header="Format" DataContext="{Binding Editor}" Template="{StaticResource BlackMenuItem}">
-                    <MenuItem Header="Format" Command="{Binding FormatCommand}" Template="{StaticResource BlackMenuItem}"/>
-                    <MenuItem Header="Word Wrap" Command="{Binding WrapCommand}" Template="{StaticResource BlackMenuItem}"/>
-                </MenuItem>
-                <MenuItem Header="Help" DataContext="{Binding Help}" Template="{StaticResource BlackMenuItem}">
-                    <MenuItem Header="About" Command="{Binding HelpCommand}" Template="{StaticResource BlackMenuItem}"/>
-                </MenuItem>
-            </Menu.Items>
-        </Menu>
+            <Menu Grid.Column="0" Background="#333333" Foreground="White">
+                <Menu.Items>
+                    <MenuItem Header="File" DataContext="{Binding File}" Template="{StaticResource BlackMenuItem}">
+                        <MenuItem Header="New" Command="{Binding NewCommand}" Template="{StaticResource BlackMenuItem}"/>
+                        <MenuItem Header="Open" Command="{Binding OpenCommand}" Template="{StaticResource BlackMenuItem}"/>
+                        <MenuItem Header="Save" Command="{Binding SaveCommand}" Template="{StaticResource BlackMenuItem}"/>
+                        <MenuItem Header="Save As" Command="{Binding SaveAsCommand}" Template="{StaticResource BlackMenuItem}"/>
+                    </MenuItem>
+                    <MenuItem Header="Format" DataContext="{Binding Editor}" Template="{StaticResource BlackMenuItem}">
+                        <MenuItem Header="Format" Command="{Binding FormatCommand}" Template="{StaticResource BlackMenuItem}"/>
+                        <MenuItem Header="Word Wrap" Command="{Binding WrapCommand}" Template="{StaticResource BlackMenuItem}"/>
+                    </MenuItem>
+                    <MenuItem Header="Help" DataContext="{Binding Help}" Template="{StaticResource BlackMenuItem}">
+                        <MenuItem Header="About" Command="{Binding HelpCommand}" Template="{StaticResource BlackMenuItem}"/>
+                    </MenuItem>
+                </Menu.Items>
+            </Menu>
+
+            <Thumb Grid.Column="1"
+                x:Name="headerThumb" 
+                Opacity="0" 
+                Background="{x:Null}" 
+                Foreground="{x:Null}" 
+                DragDelta="headerThumb_DragDelta"/>
 
             <Button Style="{StaticResource TitleBarButton}" 
                     Foreground="White" 
                     Command="{Binding MainWindow.MinimizeCommand}"
                     Grid.Column="2">
-                    <Path
+                <Path
 			            Width="46"
 			            Height="15"
 			            Data="M 18,7.5 H 28"
@@ -108,7 +119,7 @@
                 <Path
 			        Width="46"
               
-			        Data="M 15.5,5.5 H 26.5 V 13.5 H 15.5 Z M 17.5,5.5 V 2.5 H 28.5 V 11.5 H 26.5"
+			        Data="M 15.5,5.5 H 26.5 V 13.5 H 15.5 Z M 17.5,5.5 V 2.5 H 29.5 V 11.5 H 26.5"
 			        Stroke="{Binding Path=Foreground,
 							 RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
 			        StrokeThickness="1" />
@@ -124,7 +135,7 @@
 							 RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
 			        StrokeThickness="1" />
             </Button>
-                    
+
 
         </Grid>
 
@@ -164,7 +175,7 @@
             <TextBlock Text="Input:" Foreground="White"/>
             <TextBlock Text="WAITING FOR INPUT" Foreground="#FF9912" Visibility="{Binding Debugger.IsTaskWaitingForInput, Converter={StaticResource BoolToVisiblilityConverter}, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,0"/>
         </StackPanel>
-        
+
         <TextBox Grid.Row="6" Grid.Column="0" Text="{Binding Debugger.Console.InputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                  local:FocusExtension.IsFocused="{Binding Debugger.IsTaskWaitingForInput, UpdateSourceTrigger=PropertyChanged}"
                  Style="{StaticResource OrangeBorderTextBox}">
