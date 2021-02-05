@@ -17,6 +17,7 @@ namespace IDE.ViewModels
         private ConsoleModel _console;
         private DebugDocumentModel _debugDocumentModel;
         private ReplaceModel _replaceModel;
+        private CompilerFlagsModel _compilerFlags;
 
         private EditorView _editorView;
         private EditorDebugView _editorDebugView;
@@ -37,6 +38,7 @@ namespace IDE.ViewModels
             _console = new ConsoleModel();
             _debugDocumentModel = new DebugDocumentModel();
             _replaceModel = new ReplaceModel();
+            _compilerFlags = new CompilerFlagsModel();
 
             _editorView = new EditorView();
             _editorDebugView = new EditorDebugView();
@@ -46,7 +48,7 @@ namespace IDE.ViewModels
             File = new FileViewModel(_document);
             Help = new HelpViewModel();
             Debugger = new DebuggerViewModel(_document,_debugDocumentModel , _console, _debuggerModel, _currentView, _editorView, _editorDebugView);
-            Compiler = new CompilerViewModel(_document, _console);
+            Compiler = new CompilerViewModel(_document, _console, _compilerFlags);
             MainWindow = new MainWindowViewModel();
             Replace = new ReplaceViewModel(_replaceModel, _document);
         }

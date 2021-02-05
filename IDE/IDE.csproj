@@ -68,6 +68,7 @@
       <DependentUpon>FormatDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="EmbeddedInterpreter.cs" />
+    <Compile Include="Models\CompilerFlagsModel.cs" />
     <Compile Include="Models\ConsoleModel.cs" />
     <Compile Include="Models\DebugDocumentModel.cs" />
     <Compile Include="Models\DebuggerModel.cs" />
