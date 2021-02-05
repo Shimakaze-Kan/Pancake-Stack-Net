@@ -178,6 +178,8 @@
                      AcceptsTab="True"
                      Background="#25292C"
                      Foreground="White"
+                     local:TextBoxExtension.OnTextChanged="True"
+                     IsReadOnly="True"
                      Text="{Binding Debugger.Console.ConsoleText}"/>
         </DockPanel>
 
@@ -189,6 +191,8 @@
         <TextBox Grid.Row="6" Grid.Column="0" Text="{Binding Debugger.Console.InputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                  local:FocusExtension.IsFocused="{Binding Debugger.IsTaskWaitingForInput, UpdateSourceTrigger=PropertyChanged}"
                  Style="{StaticResource OrangeBorderTextBox}"
+                 Background="#25292C"
+                 Foreground="White"
                  Margin="5,0,5,5">
             <TextBox.InputBindings>
                 <KeyBinding Command="{Binding Debugger.SendInputCommand}" Key="Enter"/>
