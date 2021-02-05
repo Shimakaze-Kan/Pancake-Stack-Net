@@ -16,6 +16,7 @@ namespace IDE.ViewModels
         private DebuggerModel _debuggerModel;
         private ConsoleModel _console;
         private DebugDocumentModel _debugDocumentModel;
+        private ReplaceModel _replaceModel;
 
         private EditorView _editorView;
         private EditorDebugView _editorDebugView;
@@ -27,6 +28,7 @@ namespace IDE.ViewModels
         public DebuggerViewModel Debugger { get; set; }
         public CompilerViewModel Compiler { get; set; }
         public MainWindowViewModel MainWindow { get; set; }
+        public ReplaceViewModel Replace { get; set; }
 
         public MainViewModel()
         {
@@ -34,6 +36,7 @@ namespace IDE.ViewModels
             _debuggerModel = new DebuggerModel();
             _console = new ConsoleModel();
             _debugDocumentModel = new DebugDocumentModel();
+            _replaceModel = new ReplaceModel();
 
             _editorView = new EditorView();
             _editorDebugView = new EditorDebugView();
@@ -45,6 +48,7 @@ namespace IDE.ViewModels
             Debugger = new DebuggerViewModel(_document,_debugDocumentModel , _console, _debuggerModel, _currentView, _editorView, _editorDebugView);
             Compiler = new CompilerViewModel(_document, _console);
             MainWindow = new MainWindowViewModel();
+            Replace = new ReplaceViewModel(_replaceModel, _document);
         }
     }
 }

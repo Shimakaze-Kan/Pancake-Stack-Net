@@ -71,6 +71,7 @@
     <Compile Include="Models\ConsoleModel.cs" />
     <Compile Include="Models\DebugDocumentModel.cs" />
     <Compile Include="Models\DebuggerModel.cs" />
+    <Compile Include="Models\ReplaceModel.cs" />
     <Compile Include="MouseWheelGesture.cs" />
     <Compile Include="OutputEventArg.cs" />
     <Compile Include="RelayCommand.cs" />
@@ -83,6 +84,7 @@
     <Compile Include="ViewModels\HelpViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\ReplaceViewModel.cs" />
     <Compile Include="Views\EditorDebugView.xaml.cs">
       <DependentUpon>EditorDebugView.xaml</DependentUpon>
     </Compile>
