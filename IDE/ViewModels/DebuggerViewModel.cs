@@ -21,6 +21,7 @@ namespace IDE.ViewModels
         public DocumentModel Document { get; set; }
         public ConsoleModel Console { get; set; }
         public DebugDocumentModel DebugDocument { get; set; }
+        public DebuggerFlagsModel DebuggerFlags { get; set; }
 
         private EmbeddedInterpreter _embeddedInterpreter;
         private CancellationTokenSource _cancellationTokenSource;
@@ -30,7 +31,6 @@ namespace IDE.ViewModels
         private bool _isDebuggingMode;
         private int _previousInstruction;
 
-        //private object _currentView;
         private EditorView _editorView;
         private EditorDebugView _editorDebugView;
 
@@ -41,7 +41,7 @@ namespace IDE.ViewModels
             get { return _currentView; }
             set { OnPropertyChanged(ref _currentView, value); }
         }
-    
+
         public bool IsDebuggingMode
         {
             get { return _isDebuggingMode; }
@@ -54,12 +54,21 @@ namespace IDE.ViewModels
             set { OnPropertyChanged(ref _isTaskWaitingForInput, value); }
         }
 
-        public DebuggerViewModel(DocumentModel document, DebugDocumentModel debugDocumentModel, ConsoleModel console, DebuggerModel debugger, object currentView, EditorView editorView, EditorDebugView editorDebugView)
+        public DebuggerViewModel
+            (DocumentModel document,
+            DebugDocumentModel debugDocumentModel,
+            ConsoleModel console,
+            DebuggerModel debugger,
+            object currentView,
+            EditorView editorView,
+            EditorDebugView editorDebugView,
+            DebuggerFlagsModel debuggerFlags)
         {
             Debugger = debugger;
             Console = console;
             Document = document;
             DebugDocument = debugDocumentModel;
+            DebuggerFlags = debuggerFlags;
 
             _currentView = currentView;
             _editorView = editorView;
@@ -94,7 +103,7 @@ namespace IDE.ViewModels
         {
             if (!IsDebuggingMode)
             {
-                DebugDocument.Lines = new System.Collections.ObjectModel.ObservableCollection<TextLine>( Document.Text.Split(new string[] { System.Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).Select(x => new TextLine() { Text = x, BackgroundColor = Brushes.Transparent } ));
+                DebugDocument.Lines = new System.Collections.ObjectModel.ObservableCollection<TextLine>(Document.Text.Split(new string[] { System.Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).Select(x => new TextLine() { Text = x, BackgroundColor = Brushes.Transparent }));
                 DebugDocument.LinePointer = 0;
                 _previousInstruction = 0;
                 CurrentView = _editorDebugView;
@@ -114,17 +123,17 @@ namespace IDE.ViewModels
                 _cancellationTokenSource = new CancellationTokenSource();
                 CancellationToken cancellationToken = _cancellationTokenSource.Token;
                 _interpreterTask = Task.Factory.StartNew(() =>
-                    _embeddedInterpreter.ExecuteNext(cancellationToken), cancellationToken).ContinueWith((_) => { DebugDocument.LinePointer = _embeddedInterpreter.ProgramIterator; _previousInstruction = _embeddedInterpreter.ProgramIterator; });              
+                    _embeddedInterpreter.ExecuteNext(cancellationToken), cancellationToken).ContinueWith((_) => { DebugDocument.LinePointer = _embeddedInterpreter.ProgramIterator; _previousInstruction = _embeddedInterpreter.ProgramIterator; });
             }
         }
 
         private void SendInput()
         {
             Console.ConsoleText += ">" + Console.InputText + Environment.NewLine;
-            _embeddedInterpreter.Input = Console.InputText + Environment.NewLine;
+            _embeddedInterpreter.Input = Console.InputText + (DebuggerFlags.NoNewLineFlag ? "" : Environment.NewLine);
             IsTaskWaitingForInput = false;
             _embeddedInterpreter.WaitHandle.Set();
-            Console.InputText = "";            
+            Console.InputText = "";
         }
 
         private void EndCurrentInterpreterTask()

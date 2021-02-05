@@ -76,6 +76,9 @@
                         <MenuItem Header="Format" Command="{Binding FormatCommand}" Template="{StaticResource BlackMenuItem}"/>
                         <MenuItem Header="Word Wrap" Command="{Binding WrapCommand}" Template="{StaticResource BlackMenuItem}"/>
                     </MenuItem>
+                    <MenuItem Header="Debugger" Template="{StaticResource BlackMenuItem}">
+                        <MenuItem Header="-nonewline flag" IsCheckable="True" IsChecked="{Binding Debugger.DebuggerFlags.NoNewLineFlag, Mode=TwoWay}" Template="{StaticResource BlackMenuItem}"/>
+                    </MenuItem>
                     <MenuItem Header="Compiler" Template="{StaticResource BlackMenuItem}">
                         <MenuItem Header="-wait flag" IsCheckable="True" IsChecked="{Binding Compiler.CompilerFlags.WaitFlag, Mode=TwoWay}" Template="{StaticResource BlackMenuItem}"/>
                         <MenuItem Header="-nonewline flag" IsCheckable="True" IsChecked="{Binding Compiler.CompilerFlags.NoNewLineFlag, Mode=TwoWay}" Template="{StaticResource BlackMenuItem}"/>

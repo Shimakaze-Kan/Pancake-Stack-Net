@@ -71,6 +71,7 @@
     <Compile Include="Models\CompilerFlagsModel.cs" />
     <Compile Include="Models\ConsoleModel.cs" />
     <Compile Include="Models\DebugDocumentModel.cs" />
+    <Compile Include="Models\DebuggerFlagsModel.cs" />
     <Compile Include="Models\DebuggerModel.cs" />
     <Compile Include="Models\ReplaceModel.cs" />
     <Compile Include="MouseWheelGesture.cs" />
