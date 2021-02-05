@@ -8,8 +8,10 @@
         ResizeMode="CanResizeWithGrip" 
         AllowsTransparency="True" 
         WindowStyle="None" 
-        BorderThickness="2"
-        Title="AboutDialog" Height="315" Width="450" Background="#FF252526" BorderBrush="#FFFCA614" MinWidth="450" MouseDown="Window_MouseDown" MinHeight="315">
+        BorderThickness="1"
+        WindowStartupLocation="CenterScreen"
+        Title="AboutDialog" Height="315" Width="450" Background="#252526" BorderBrush="#FF9912" MinWidth="450" MouseDown="Window_MouseDown" MinHeight="315">
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
