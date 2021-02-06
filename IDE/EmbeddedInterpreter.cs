@@ -24,12 +24,11 @@ namespace IDE
         public string Input { private get; set; }
 
 
-        public EmbeddedInterpreter(string input)
+        public EmbeddedInterpreter(string[] input)
         {
             PancakeStack = new Stack<int>();
             Labels = new Dictionary<string, int>();
-            _programCode = input.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-            _programCode = _programCode.Select(elem => elem.Trim()).ToArray();
+            _programCode = input;
             ProgramIterator = 0;
             WaitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
         }

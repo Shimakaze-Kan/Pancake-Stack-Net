@@ -11,9 +11,9 @@ namespace IDE
     {
         private string[] _sourceCode;
 
-        public string SourceCode
+        public string[] ValidSourceCode
         {
-            get { return string.Join(Environment.NewLine, _sourceCode); }
+            get { return _sourceCode.Where(x => !string.IsNullOrEmpty(x)).ToArray(); }
         }
 
 

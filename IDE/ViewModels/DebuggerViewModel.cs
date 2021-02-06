@@ -96,7 +96,7 @@ namespace IDE.ViewModels
             var validateCode = new ValidateSourceCode(Document.Text);
             if (validateCode.ValidateInstructions().Item1)
             {
-                _embeddedInterpreter = new EmbeddedInterpreter(validateCode.SourceCode);
+                _embeddedInterpreter = new EmbeddedInterpreter(validateCode.ValidSourceCode);
                 AddHandlersToInterpreterThread();
 
                 _cancellationTokenSource = new CancellationTokenSource();
@@ -120,7 +120,7 @@ namespace IDE.ViewModels
                 if (validateCode.ValidateInstructions().Item1)
                 {
                     _mapRealLineNumbersWithRaw = validateCode.MapRealLineNumbersWithRaw();
-                    _embeddedInterpreter = new EmbeddedInterpreter(validateCode.SourceCode);
+                    _embeddedInterpreter = new EmbeddedInterpreter(validateCode.ValidSourceCode);
                     DebugDocument.Lines = new System.Collections.ObjectModel.ObservableCollection<TextLine>(Document.Text.Split(new string[] { System.Environment.NewLine }, StringSplitOptions.None).Select(x => new TextLine() { Text = x, BackgroundColor = Brushes.Transparent }));
                     DebugDocument.LinePointer = 0;
                     _previousInstruction = 0;
