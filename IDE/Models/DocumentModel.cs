@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +13,11 @@ namespace IDE.Models
         public string Text
         {
             get { return _text; }
-            set { OnPropertyChanged(ref _text, value); }
+            set 
+            { 
+                OnPropertyChanged(ref _text, value);
+                LineNumber = new ObservableCollection<int>(Enumerable.Range(1, value.Split('\n').Length));
+            }
         }
 
         private string _filePath;
@@ -29,12 +34,12 @@ namespace IDE.Models
             set { OnPropertyChanged(ref _fileName, value); }
         }
 
-        public bool IsEmpty
+        private ObservableCollection<int> _lineNumber;
+
+        public ObservableCollection<int> LineNumber
         {
-            get
-            {
-                return string.IsNullOrEmpty(_fileName) || string.IsNullOrEmpty(_filePath);
-            }
+            get { return _lineNumber; }
+            set { OnPropertyChanged(ref _lineNumber, value); }
         }
 
     }
