@@ -130,8 +130,11 @@ namespace IDE.ViewModels
                     _mapRealLineNumbersWithRaw = validateCode.MapRealLineNumbersWithRaw();
                     _embeddedInterpreter = new EmbeddedInterpreter(validateCode.ValidSourceCode);
                     DebugDocument.Lines = new System.Collections.ObjectModel.ObservableCollection<TextLine>(Document.Text.Split(new string[] { System.Environment.NewLine }, StringSplitOptions.None).Select(x => new TextLine() { Text = x, BackgroundColor = Brushes.Transparent }));
-                    DebugDocument.LinePointer = _mapRealLineNumbersWithRaw[0];
-                    _previousInstruction = 0;
+
+                    var startLine = 0;
+                    _mapRealLineNumbersWithRaw.TryGetValue(0, out startLine);
+                    DebugDocument.LinePointer = startLine;
+                    _previousInstruction = startLine;
                     CurrentView = _editorDebugView;
 
                     Console.ConsoleText = "";
