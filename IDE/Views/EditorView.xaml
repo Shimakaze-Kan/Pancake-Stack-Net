@@ -35,7 +35,7 @@
                     Grid.RowSpan="2" 
                     Panel.ZIndex="1"
                     BorderThickness="1"
-                    BorderBrush="#FF9912">
+                    BorderBrush="#ABADB3">
                 <ScrollViewer VerticalScrollBarVisibility="Visible" Grid.Column="0">
                     <Grid>
                         <Grid.ColumnDefinitions>

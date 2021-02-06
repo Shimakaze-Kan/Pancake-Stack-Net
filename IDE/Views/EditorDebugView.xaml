@@ -14,20 +14,38 @@
             <ColumnDefinition Width="0.3*"/>
         </Grid.ColumnDefinitions>
 
-        <Border Grid.Column="0" BorderThickness="1" BorderBrush="#FF9912">
+        <Border Grid.Column="0" BorderThickness="1" BorderBrush="#ABADB3">
             <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Visible">
-                <ItemsControl ItemsSource="{Binding Debugger.DebugDocument.Lines}" Background="#25292C" Foreground="White">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Text}" 
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <ItemsControl Grid.Column="0" 
+                                  ItemsSource="{Binding Editor.Document.LineNumber}" 
+                                  FontFamily="{Binding Editor.Format.Family}" 
+                                  FontSize="{Binding Editor.Format.Size}" 
+                                  Foreground="#258FAD" Background="#161616">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}" HorizontalAlignment="Right" Margin="10,0"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <ItemsControl Grid.Column="1" ItemsSource="{Binding Debugger.DebugDocument.Lines}" Background="#25292C" Foreground="White">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Text}" 
                                    Background="{Binding BackgroundColor, UpdateSourceTrigger=PropertyChanged}" 
                                    Foreground="{Binding ForegroundColor, UpdateSourceTrigger=PropertyChanged}"
                                    FontFamily="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.Editor.Format.Family}"
                                    FontSize="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.Editor.Format.Size}"
-                                   Padding="2,0,0,0"/>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                                   Padding="7,0,0,0"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
             </ScrollViewer>
         </Border>
 
