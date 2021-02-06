@@ -31,12 +31,20 @@ namespace PancakeStack_Compiler
                 }
             }
 
-            var sourceCode = File.ReadAllLines(sourceFileName);
+            var sourceCode = File.ReadAllText(sourceFileName);
 
-            //sourceCode = sourceCode.Select(item => item.Trim());
+            var validateCode = new ValidateSourceCode(sourceCode);
+            var validationResult = validateCode.ValidateInstructions();
 
-            PSCompiler.Compile(outputFileName, outputFileName + ".exe", sourceCode, compilerFlags);
-            Console.WriteLine($"File: {sourceFileName} successfully compiled to {outputFileName}.exe");
+            if (validationResult.Item1)
+            {
+                PSCompiler.Compile(outputFileName, outputFileName + ".exe", validateCode.ValidSourceCode, compilerFlags);
+                Console.WriteLine($"File: {sourceFileName} successfully compiled to {outputFileName}.exe");
+            }
+            else
+            {
+                Console.WriteLine($"Error: Instruction on line {validationResult.Item2} cannot be found");
+            }
         }
     }
 }
