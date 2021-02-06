@@ -54,6 +54,8 @@ namespace IDE.ViewModels
             set { OnPropertyChanged(ref _isTaskWaitingForInput, value); }
         }
 
+        private Dictionary<int, int> _mapRealLineNumbersWithRaw;
+
         public DebuggerViewModel
             (DocumentModel document,
             DebugDocumentModel debugDocumentModel,
@@ -90,30 +92,52 @@ namespace IDE.ViewModels
             EndCurrentInterpreterTask();
 
             Console.ConsoleText = "";
-            AddHandlersToInterpreterThread();
 
-            _cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = _cancellationTokenSource.Token;
-            _interpreterTask = Task.Factory.StartNew(() =>
-                _embeddedInterpreter.StartExecuting(cancellationToken), cancellationToken);
-            _isTaskRunning = true;
+            var validateCode = new ValidateSourceCode(Document.Text);
+            if (validateCode.ValidateInstructions().Item1)
+            {
+                _embeddedInterpreter = new EmbeddedInterpreter(validateCode.SourceCode);
+                AddHandlersToInterpreterThread();
+
+                _cancellationTokenSource = new CancellationTokenSource();
+                CancellationToken cancellationToken = _cancellationTokenSource.Token;
+                _interpreterTask = Task.Factory.StartNew(() =>
+                    _embeddedInterpreter.StartExecuting(cancellationToken), cancellationToken);
+                _isTaskRunning = true;
+            }
+            else
+            {
+                Console.ConsoleText = string.Format("Instruction on line {0} cannot be found{1}", 
+                    validateCode.ValidateInstructions().Item2+1, Environment.NewLine);
+            }
         }
 
         private void NextInstruction()
         {
             if (!IsDebuggingMode)
             {
-                DebugDocument.Lines = new System.Collections.ObjectModel.ObservableCollection<TextLine>(Document.Text.Split(new string[] { System.Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).Select(x => new TextLine() { Text = x, BackgroundColor = Brushes.Transparent }));
-                DebugDocument.LinePointer = 0;
-                _previousInstruction = 0;
-                CurrentView = _editorDebugView;
+                var validateCode = new ValidateSourceCode(Document.Text);
+                if (validateCode.ValidateInstructions().Item1)
+                {
+                    _mapRealLineNumbersWithRaw = validateCode.MapRealLineNumbersWithRaw();
+                    _embeddedInterpreter = new EmbeddedInterpreter(validateCode.SourceCode);
+                    DebugDocument.Lines = new System.Collections.ObjectModel.ObservableCollection<TextLine>(Document.Text.Split(new string[] { System.Environment.NewLine }, StringSplitOptions.None).Select(x => new TextLine() { Text = x, BackgroundColor = Brushes.Transparent }));
+                    DebugDocument.LinePointer = 0;
+                    _previousInstruction = 0;
+                    CurrentView = _editorDebugView;
 
-                Console.ConsoleText = "";
-                AddHandlersToInterpreterThread();
+                    Console.ConsoleText = "";
+                    AddHandlersToInterpreterThread();
 
-                IsDebuggingMode = true;
-                Debugger.Stack = null;
-                Debugger.Label = null;
+                    IsDebuggingMode = true;
+                    Debugger.Stack = null;
+                    Debugger.Label = null;
+                }
+                else
+                {
+                    Console.ConsoleText = string.Format("Instruction on line {0} cannot be found{1}",
+                        validateCode.ValidateInstructions().Item2 + 1, Environment.NewLine);
+                }
             }
             else if (!IsTaskWaitingForInput)
             {
@@ -123,7 +147,7 @@ namespace IDE.ViewModels
                 _cancellationTokenSource = new CancellationTokenSource();
                 CancellationToken cancellationToken = _cancellationTokenSource.Token;
                 _interpreterTask = Task.Factory.StartNew(() =>
-                    _embeddedInterpreter.ExecuteNext(cancellationToken), cancellationToken).ContinueWith((_) => { DebugDocument.LinePointer = _embeddedInterpreter.ProgramIterator; _previousInstruction = _embeddedInterpreter.ProgramIterator; });
+                    _embeddedInterpreter.ExecuteNext(cancellationToken), cancellationToken).ContinueWith((_) => { DebugDocument.LinePointer = _mapRealLineNumbersWithRaw[_embeddedInterpreter.ProgramIterator]; _previousInstruction = _mapRealLineNumbersWithRaw[_embeddedInterpreter.ProgramIterator]; });
             }
         }
 
@@ -155,8 +179,7 @@ namespace IDE.ViewModels
         }
 
         private void AddHandlersToInterpreterThread()
-        {
-            _embeddedInterpreter = new EmbeddedInterpreter(Document.Text);
+        {            
             _embeddedInterpreter.NewOutputEvent +=
             new EventHandler<OutputEventArgs>(delegate (Object o, OutputEventArgs a) // TODO change to dispatcher
                 {

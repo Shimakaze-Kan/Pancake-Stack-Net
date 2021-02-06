@@ -79,6 +79,7 @@
     <Compile Include="RelayCommand.cs" />
     <Compile Include="TextBoxExtension.cs" />
     <Compile Include="TextLine.cs" />
+    <Compile Include="ValidateSourceCode.cs" />
     <Compile Include="ViewModels\CompilerViewModel.cs" />
     <Compile Include="ViewModels\DebuggerViewModel.cs" />
     <Compile Include="ViewModels\EditorDebugViewModel.cs" />
