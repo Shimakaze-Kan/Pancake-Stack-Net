@@ -78,6 +78,7 @@
                     </MenuItem>
                     <MenuItem Header="Debugger" Template="{StaticResource BlackMenuItem}">
                         <MenuItem Header="-nonewline flag" IsCheckable="True" IsChecked="{Binding Debugger.DebuggerFlags.NoNewLineFlag, Mode=TwoWay}" Template="{StaticResource BlackMenuItem}"/>
+                        <MenuItem Header="-noinputinconsole flag" IsCheckable="True" IsChecked="{Binding Debugger.DebuggerFlags.NoInputInConsoleFlag, Mode=TwoWay}" Template="{StaticResource BlackMenuItem}"/>
                     </MenuItem>
                     <MenuItem Header="Compiler" Template="{StaticResource BlackMenuItem}">
                         <MenuItem Header="-wait flag" IsCheckable="True" IsChecked="{Binding Compiler.CompilerFlags.WaitFlag, Mode=TwoWay}" Template="{StaticResource BlackMenuItem}"/>

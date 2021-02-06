@@ -153,7 +153,9 @@ namespace IDE.ViewModels
 
         private void SendInput()
         {
-            Console.ConsoleText += ">" + Console.InputText + Environment.NewLine;
+            if(DebuggerFlags.NoInputInConsoleFlag == false)
+                Console.ConsoleText += ">" + Console.InputText + Environment.NewLine;
+
             _embeddedInterpreter.Input = Console.InputText + (DebuggerFlags.NoNewLineFlag ? "" : Environment.NewLine);
             IsTaskWaitingForInput = false;
             _embeddedInterpreter.WaitHandle.Set();

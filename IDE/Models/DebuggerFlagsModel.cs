@@ -16,5 +16,12 @@ namespace IDE.Models
             set { OnPropertyChanged(ref _noNewLineFlag, value); }
         }
 
+        private bool _noInputInConsoleFlag;
+
+        public bool NoInputInConsoleFlag
+        {
+            get { return _noInputInConsoleFlag; }
+            set { OnPropertyChanged(ref _noInputInConsoleFlag, value); }
+        }
     }
 }
