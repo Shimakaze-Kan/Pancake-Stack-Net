@@ -103,6 +103,7 @@ namespace IDE.ViewModels
             var validateCode = new ValidateSourceCode(Document.Text);
             if (validateCode.ValidateInstructions().Item1)
             {
+                _mapRealLineNumbersWithRaw = validateCode.MapRealLineNumbersWithRaw();
                 _embeddedInterpreter = new EmbeddedInterpreter(validateCode.ValidSourceCode);
                 AddHandlersToInterpreterThread();
 
@@ -129,7 +130,7 @@ namespace IDE.ViewModels
                     _mapRealLineNumbersWithRaw = validateCode.MapRealLineNumbersWithRaw();
                     _embeddedInterpreter = new EmbeddedInterpreter(validateCode.ValidSourceCode);
                     DebugDocument.Lines = new System.Collections.ObjectModel.ObservableCollection<TextLine>(Document.Text.Split(new string[] { System.Environment.NewLine }, StringSplitOptions.None).Select(x => new TextLine() { Text = x, BackgroundColor = Brushes.Transparent }));
-                    DebugDocument.LinePointer = 0;
+                    DebugDocument.LinePointer = _mapRealLineNumbersWithRaw[0];
                     _previousInstruction = 0;
                     CurrentView = _editorDebugView;
 
@@ -154,7 +155,13 @@ namespace IDE.ViewModels
                 _cancellationTokenSource = new CancellationTokenSource();
                 CancellationToken cancellationToken = _cancellationTokenSource.Token;
                 _interpreterTask = Task.Factory.StartNew(() =>
-                    _embeddedInterpreter.ExecuteNext(cancellationToken), cancellationToken).ContinueWith((_) => { DebugDocument.LinePointer = _mapRealLineNumbersWithRaw[_embeddedInterpreter.ProgramIterator]; _previousInstruction = _mapRealLineNumbersWithRaw[_embeddedInterpreter.ProgramIterator]; });
+                    _embeddedInterpreter.ExecuteNext(cancellationToken), cancellationToken).ContinueWith((_) => 
+                    {
+                        var line = 0; // if error
+                        _mapRealLineNumbersWithRaw.TryGetValue(_embeddedInterpreter.ProgramIterator, out line);
+                        DebugDocument.LinePointer = line; 
+                        _previousInstruction = line; 
+                    });
             }
         }
 
@@ -197,7 +204,10 @@ namespace IDE.ViewModels
                     if (a.Type == OutputType.Character)
                         Console.ConsoleText += a.CharacterOutput;
                     else
-                        Console.ConsoleText += a.LineOutput + Environment.NewLine;
+                        Console.ConsoleText += a.LineOutput + (a.RuntimeError ? "" : Environment.NewLine);
+
+                    if (a.RuntimeError)
+                        Console.ConsoleText += _mapRealLineNumbersWithRaw[a.LineNumberErrorHandling] + 1 + Environment.NewLine;
                 });
             _embeddedInterpreter.WaitingForInputEvent += new EventHandler<WaitingForInputEventArgs>((_, a) => { IsTaskWaitingForInput = true; InputType = a; });
             _embeddedInterpreter.PancakeStackChangedEvent += new EventHandler<Stack<int>>((o, a) => Debugger.Stack = a.ToList());

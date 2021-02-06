@@ -17,5 +17,7 @@ namespace IDE
         public OutputType Type { get; set; }
         public char CharacterOutput { get; set; }
         public string LineOutput { get; set; }
+        public bool RuntimeError { get; set; }
+        public int LineNumberErrorHandling { get; set; }
     }
 }
