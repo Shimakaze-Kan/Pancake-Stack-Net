@@ -36,6 +36,8 @@
         <converter:WindowStateMinimizedToVisibleConverter x:Key="WindowStateMinimizedToVisibleConverter"/>
         <converter:WindowStateToCorrectMarginConverter x:Key="WindowStateToCorrectMarginConverter"/>
         <converter:WindowStateMaximizedToResizeModeConverter x:Key="WindowStateMaximizedToResizeModeConverter"/>
+        <converter:AlphanumericInputTypeToVisibilityConverter x:Key="AlphanumericInputTypeToVisibilityConverter"/>
+        <converter:NumericInputTypeToVisibilityConverter x:Key="NumericInputTypeToVisibilityConverter"/>
     </Window.Resources>
     <Window.ResizeMode>
         <Binding Path="MainWindow.CurrentState" Converter="{StaticResource WindowStateMaximizedToResizeModeConverter}"/>
@@ -187,6 +189,14 @@
         <StackPanel Grid.Row="5" Grid.Column="0" Orientation="Horizontal" Margin="5,0,5,0">
             <TextBlock Text="Input:" Foreground="White"/>
             <TextBlock Text="WAITING FOR INPUT" Foreground="#FF9912" Visibility="{Binding Debugger.IsTaskWaitingForInput, Converter={StaticResource BoolToVisiblilityConverter}, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,0"/>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text=" (numeric)" Foreground="#FF9912" Visibility="{Binding Debugger.InputType, Converter={StaticResource NumericInputTypeToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock Grid.Column="0" Text=" (alphanumeric)" Foreground="#FF9912" Visibility="{Binding Debugger.InputType, Converter={StaticResource AlphanumericInputTypeToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
         </StackPanel>
 
         <TextBox Grid.Row="6" Grid.Column="0" Text="{Binding Debugger.Console.InputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"

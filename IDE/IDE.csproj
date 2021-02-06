@@ -57,8 +57,10 @@
     <Compile Include="AboutDialog.xaml.cs">
       <DependentUpon>AboutDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\AlphanumericInputTypeToVisibilityConverter.cs" />
     <Compile Include="Converters\BoolToVisiblilityConverter.cs" />
     <Compile Include="Converters\BottomBarColorConverter.cs" />
+    <Compile Include="Converters\NumericInputTypeToVisibilityConverter.cs" />
     <Compile Include="Converters\WindowStateMaximizedToResizeModeConverter.cs" />
     <Compile Include="Converters\WindowStateMaximizedToVisibleConverter.cs" />
     <Compile Include="Converters\WindowStateMinimizedToVisibleConverter.cs" />
@@ -95,6 +97,7 @@
     <Compile Include="Views\EditorView.xaml.cs">
       <DependentUpon>EditorView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WaitingForInputEventArgs.cs" />
     <Page Include="AboutDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

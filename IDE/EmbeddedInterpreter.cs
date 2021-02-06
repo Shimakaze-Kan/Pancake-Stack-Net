@@ -11,7 +11,7 @@ namespace IDE
     public class EmbeddedInterpreter
     {
         public event EventHandler EndOfExecutionEvent;
-        public event EventHandler WaitingForInputEvent;
+        public event EventHandler<WaitingForInputEventArgs> WaitingForInputEvent;
         public event EventHandler<OutputEventArgs> NewOutputEvent;
         public event EventHandler<Stack<int>> PancakeStackChangedEvent;
         public event EventHandler<Dictionary<string,int>> LabelDictionaryChangedEvent;
@@ -80,7 +80,7 @@ namespace IDE
                         if (ct.IsCancellationRequested)
                             break;
 
-                        WaitingForInputEvent?.Invoke(this, EventArgs.Empty);
+                        WaitingForInputEvent?.Invoke(this, new WaitingForInputEventArgs() { Type = InputType.Numeric });
                         WaitHandle.WaitOne();
                     }
 
@@ -96,7 +96,7 @@ namespace IDE
                         if (ct.IsCancellationRequested)
                             break;
 
-                        WaitingForInputEvent?.Invoke(this, EventArgs.Empty);
+                        WaitingForInputEvent?.Invoke(this, new WaitingForInputEventArgs() { Type = InputType.Alphanumeric });
                         WaitHandle.WaitOne();
                     }
 

@@ -25,6 +25,7 @@ namespace IDE.ViewModels
 
         private EmbeddedInterpreter _embeddedInterpreter;
         private CancellationTokenSource _cancellationTokenSource;
+        private WaitingForInputEventArgs _inputType;
         private Task _interpreterTask;
         private bool _isTaskRunning;
         private bool _isTaskWaitingForInput;
@@ -52,6 +53,12 @@ namespace IDE.ViewModels
         {
             get { return _isTaskWaitingForInput; }
             set { OnPropertyChanged(ref _isTaskWaitingForInput, value); }
+        }
+
+        public WaitingForInputEventArgs InputType
+        {
+            get { return _inputType; }
+            set { OnPropertyChanged(ref _inputType, value); }
         }
 
         private Dictionary<int, int> _mapRealLineNumbersWithRaw;
@@ -158,6 +165,7 @@ namespace IDE.ViewModels
 
             _embeddedInterpreter.Input = Console.InputText + (DebuggerFlags.NoNewLineFlag ? "" : Environment.NewLine);
             IsTaskWaitingForInput = false;
+            InputType = null;
             _embeddedInterpreter.WaitHandle.Set();
             Console.InputText = "";
         }
@@ -178,6 +186,7 @@ namespace IDE.ViewModels
             }
 
             IsTaskWaitingForInput = false;
+            InputType = null;
         }
 
         private void AddHandlersToInterpreterThread()
@@ -190,7 +199,7 @@ namespace IDE.ViewModels
                     else
                         Console.ConsoleText += a.LineOutput + Environment.NewLine;
                 });
-            _embeddedInterpreter.WaitingForInputEvent += new EventHandler((o, a) => IsTaskWaitingForInput = true);
+            _embeddedInterpreter.WaitingForInputEvent += new EventHandler<WaitingForInputEventArgs>((_, a) => { IsTaskWaitingForInput = true; InputType = a; });
             _embeddedInterpreter.PancakeStackChangedEvent += new EventHandler<Stack<int>>((o, a) => Debugger.Stack = a.ToList());
             _embeddedInterpreter.LabelDictionaryChangedEvent += new EventHandler<Dictionary<string, int>>((_, a) => Debugger.Label = a.Select(x => new KeyValuePair<string, int>(x.Key, x.Value + 2)).ToList());
             _embeddedInterpreter.EndOfExecutionEvent += new EventHandler((o, a) => EndCurrentInterpreterTask());
