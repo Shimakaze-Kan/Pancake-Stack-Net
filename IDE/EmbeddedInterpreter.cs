@@ -73,6 +73,8 @@ namespace IDE
                         break;
                     }
                 case "Give me a pancake!":
+                    Input = "";
+
                     while (string.IsNullOrEmpty(Input))
                     {
                         if (ct.IsCancellationRequested)
