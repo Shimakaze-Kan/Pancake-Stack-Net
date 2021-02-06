@@ -16,7 +16,7 @@ namespace IDE.Models
             set 
             { 
                 OnPropertyChanged(ref _text, value);
-                LineNumber = new ObservableCollection<int>(Enumerable.Range(1, value.Split('\n').Length));
+                LineNumber = Enumerable.Range(1, value.Split('\n').Length);
             }
         }
 
@@ -34,9 +34,9 @@ namespace IDE.Models
             set { OnPropertyChanged(ref _fileName, value); }
         }
 
-        private ObservableCollection<int> _lineNumber;
+        private IEnumerable<int> _lineNumber;
 
-        public ObservableCollection<int> LineNumber
+        public IEnumerable<int> LineNumber
         {
             get { return _lineNumber; }
             set { OnPropertyChanged(ref _lineNumber, value); }
