@@ -101,9 +101,10 @@ namespace IDE.ViewModels
             Console.ConsoleText = "";
 
             var validateCode = new ValidateSourceCode(Document.Text);
+            _mapRealLineNumbersWithRaw = validateCode.MapRealLineNumbersWithRaw();
+
             if (validateCode.ValidateInstructions().Item1)
-            {
-                _mapRealLineNumbersWithRaw = validateCode.MapRealLineNumbersWithRaw();
+            {                
                 _embeddedInterpreter = new EmbeddedInterpreter(validateCode.ValidSourceCode);
                 AddHandlersToInterpreterThread();
 
@@ -116,7 +117,7 @@ namespace IDE.ViewModels
             else
             {
                 Console.ConsoleText = string.Format("Instruction on line {0} cannot be found{1}", 
-                    validateCode.ValidateInstructions().Item2+1, Environment.NewLine);
+                    _mapRealLineNumbersWithRaw[validateCode.ValidateInstructions().Item2]+1, Environment.NewLine);
             }
         }
 
@@ -125,9 +126,10 @@ namespace IDE.ViewModels
             if (!IsDebuggingMode)
             {
                 var validateCode = new ValidateSourceCode(Document.Text);
+                _mapRealLineNumbersWithRaw = validateCode.MapRealLineNumbersWithRaw();
+
                 if (validateCode.ValidateInstructions().Item1)
-                {
-                    _mapRealLineNumbersWithRaw = validateCode.MapRealLineNumbersWithRaw();
+                {                    
                     _embeddedInterpreter = new EmbeddedInterpreter(validateCode.ValidSourceCode);
                     DebugDocument.Lines = new System.Collections.ObjectModel.ObservableCollection<TextLine>(Document.Text.Split(new string[] { System.Environment.NewLine }, StringSplitOptions.None).Select(x => new TextLine() { Text = x, BackgroundColor = Brushes.Transparent }));
 
@@ -147,7 +149,7 @@ namespace IDE.ViewModels
                 else
                 {
                     Console.ConsoleText = string.Format("Instruction on line {0} cannot be found{1}",
-                        validateCode.ValidateInstructions().Item2 + 1, Environment.NewLine);
+                    _mapRealLineNumbersWithRaw[validateCode.ValidateInstructions().Item2] + 1, Environment.NewLine);
                 }
             }
             else if (!IsTaskWaitingForInput)
