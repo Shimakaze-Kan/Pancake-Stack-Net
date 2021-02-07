@@ -43,7 +43,7 @@ namespace PancakeStack_Compiler
             }
             else
             {
-                Console.WriteLine($"Error: Instruction on line {validationResult.Item2} cannot be found");
+                Console.WriteLine($"Error: Instruction on line {validateCode.MapRealLineNumbersWithRaw()[validationResult.Item2] + 1} cannot be found");
             }
         }
     }
