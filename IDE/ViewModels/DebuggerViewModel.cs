@@ -106,7 +106,7 @@ namespace IDE.ViewModels
             if (validateCode.ValidateInstructions().Item1)
             {                
                 _embeddedInterpreter = new EmbeddedInterpreter(validateCode.ValidSourceCode);
-                AddHandlersToInterpreterThread();
+                AddHandlersToInterpreterThread(DebugMode.Continuous);
 
                 _cancellationTokenSource = new CancellationTokenSource();
                 CancellationToken cancellationToken = _cancellationTokenSource.Token;
@@ -140,7 +140,7 @@ namespace IDE.ViewModels
                     CurrentView = _editorDebugView;
 
                     Console.ConsoleText = "";
-                    AddHandlersToInterpreterThread();
+                    AddHandlersToInterpreterThread(DebugMode.StepByStep);
 
                     IsDebuggingMode = true;
                     Debugger.Stack = null;
@@ -201,7 +201,7 @@ namespace IDE.ViewModels
             InputType = null;
         }
 
-        private void AddHandlersToInterpreterThread()
+        private void AddHandlersToInterpreterThread(DebugMode debugMode)
         {            
             _embeddedInterpreter.NewOutputEvent +=
             new EventHandler<OutputEventArgs>(delegate (Object o, OutputEventArgs a) // TODO change to dispatcher
@@ -215,10 +215,21 @@ namespace IDE.ViewModels
                         Console.ConsoleText += _mapRealLineNumbersWithRaw[a.LineNumberErrorHandling] + 1 + Environment.NewLine;
                 });
             _embeddedInterpreter.WaitingForInputEvent += new EventHandler<WaitingForInputEventArgs>((_, a) => { IsTaskWaitingForInput = true; InputType = a; });
-            _embeddedInterpreter.PancakeStackChangedEvent += new EventHandler<Stack<int>>((o, a) => Debugger.Stack = a.ToList());
-            _embeddedInterpreter.LabelDictionaryChangedEvent += new EventHandler<Dictionary<string, int>>((_, a) =>
-                Debugger.Label = a.Select(x => new KeyValuePair<string, Tuple<int, int>>(x.Key, new Tuple<int, int>(x.Value + 2, _mapRealLineNumbersWithRaw[x.Value + 1] + 1))).ToList());
+
+            if (debugMode == DebugMode.StepByStep)
+            {
+                _embeddedInterpreter.PancakeStackChangedEvent += new EventHandler<Stack<int>>((o, a) => Debugger.Stack = a.ToList());
+                _embeddedInterpreter.LabelDictionaryChangedEvent += new EventHandler<Dictionary<string, int>>((_, a) =>
+                    Debugger.Label = a.Select(x => new KeyValuePair<string, Tuple<int, int>>(x.Key, new Tuple<int, int>(x.Value + 2, _mapRealLineNumbersWithRaw[x.Value + 1] + 1))).ToList());
+            }
+
             _embeddedInterpreter.EndOfExecutionEvent += new EventHandler((o, a) => EndCurrentInterpreterTask());
         }
+    }
+
+    enum DebugMode
+    {
+        StepByStep,
+        Continuous
     }
 }
