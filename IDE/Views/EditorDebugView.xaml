@@ -11,7 +11,7 @@
 
     <UserControl.Resources>
         <converter:ListInt32ToCountConverter x:Key="ListInt32ToCountConverter"/>
-        <converter:ListKeyValuePairToCountConverter x:Key="ListKeyValuePairToCountConverter"/>
+        <converter:ListKeyValuePairTupleToCountConverter x:Key="ListKeyValuePairTupleToCountConverter"/>
     </UserControl.Resources>
 
     <Grid>
@@ -87,7 +87,7 @@
             <StackPanel Grid.Column="1" Background="#252526" Margin="10,0,0,0">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Labels" FontSize="20" Foreground="White" Padding="10,0"/>
-                    <TextBlock Text="{Binding Debugger.Debugger.Label, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ListKeyValuePairToCountConverter}}" FontSize="20" Foreground="White" Padding="0,0,10,0"/>
+                    <TextBlock Text="{Binding Debugger.Debugger.Label, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ListKeyValuePairTupleToCountConverter}}" FontSize="20" Foreground="White" Padding="0,0,10,0"/>
                 </StackPanel>
                 <ItemsControl ItemsSource="{Binding Debugger.Debugger.Label, UpdateSourceTrigger=PropertyChanged}">
                     <ItemsControl.ItemTemplate>

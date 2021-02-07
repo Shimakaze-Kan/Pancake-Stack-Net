@@ -60,7 +60,7 @@
     <Compile Include="Converters\AlphanumericInputTypeToVisibilityConverter.cs" />
     <Compile Include="Converters\BoolToVisiblilityConverter.cs" />
     <Compile Include="Converters\BottomBarColorConverter.cs" />
-    <Compile Include="Converters\ListKeyValuePairToCountConverter.cs" />
+    <Compile Include="Converters\ListKeyValuePairTupleToCountConverter.cs" />
     <Compile Include="Converters\NumericInputTypeToVisibilityConverter.cs" />
     <Compile Include="Converters\ListInt32ToCountConverter.cs" />
     <Compile Include="Converters\WindowStateMaximizedToResizeModeConverter.cs" />

@@ -14,20 +14,20 @@ namespace IDE.Models
         public List<int> Stack
         {
             get { return _stack; }
-            set 
+            set
             {
                 OnPropertyChanged(ref _stack, value);
             }
         }
 
-        private List<KeyValuePair<string,int>> _label;
+        private List<KeyValuePair<string, Tuple<int, int>>> _label;
 
-        public List<KeyValuePair<string,int>> Label
+        public List<KeyValuePair<string, Tuple<int, int>>> Label
         {
             get { return _label; }
-            set 
+            set
             {
-                OnPropertyChanged(ref _label, value); 
+                OnPropertyChanged(ref _label, value);
             }
         }
 

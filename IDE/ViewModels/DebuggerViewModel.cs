@@ -216,7 +216,8 @@ namespace IDE.ViewModels
                 });
             _embeddedInterpreter.WaitingForInputEvent += new EventHandler<WaitingForInputEventArgs>((_, a) => { IsTaskWaitingForInput = true; InputType = a; });
             _embeddedInterpreter.PancakeStackChangedEvent += new EventHandler<Stack<int>>((o, a) => Debugger.Stack = a.ToList());
-            _embeddedInterpreter.LabelDictionaryChangedEvent += new EventHandler<Dictionary<string, int>>((_, a) => Debugger.Label = a.Select(x => new KeyValuePair<string, int>(x.Key, x.Value + 2)).ToList());
+            _embeddedInterpreter.LabelDictionaryChangedEvent += new EventHandler<Dictionary<string, int>>((_, a) =>
+                Debugger.Label = a.Select(x => new KeyValuePair<string, Tuple<int, int>>(x.Key, new Tuple<int, int>(x.Value + 2, _mapRealLineNumbersWithRaw[x.Value + 1] + 1))).ToList());
             _embeddedInterpreter.EndOfExecutionEvent += new EventHandler((o, a) => EndCurrentInterpreterTask());
         }
     }
