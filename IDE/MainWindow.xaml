@@ -9,13 +9,16 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800" Background="#333333"
         WindowState="{Binding MainWindow.CurrentState, Mode=TwoWay}"
-        WindowStyle="None"        
-        AllowsTransparency="True"
         BorderBrush="#FF9912"
-        BorderThickness="1"
-        MaxWidth="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Width}"
-        MaxHeight="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Height}">
-
+        BorderThickness="{Binding MainWindow.Thickness}">
+    
+    <WindowChrome.WindowChrome>
+        <WindowChrome
+            ResizeBorderThickness="5"
+            CaptionHeight="15"
+            NonClientFrameEdges="None"
+            CornerRadius="0"/>
+    </WindowChrome.WindowChrome>
     <Window.DataContext>
         <viewmodel:MainViewModel/>
     </Window.DataContext>
@@ -39,9 +42,6 @@
         <converter:AlphanumericInputTypeToVisibilityConverter x:Key="AlphanumericInputTypeToVisibilityConverter"/>
         <converter:NumericInputTypeToVisibilityConverter x:Key="NumericInputTypeToVisibilityConverter"/>
     </Window.Resources>
-    <Window.ResizeMode>
-        <Binding Path="MainWindow.CurrentState" Converter="{StaticResource WindowStateMaximizedToResizeModeConverter}"/>
-    </Window.ResizeMode>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -66,7 +66,7 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Menu Grid.Column="0" Background="#333333" Foreground="White">
+            <Menu WindowChrome.IsHitTestVisibleInChrome="True" Grid.Column="0" Background="#333333" Foreground="White">
                 <Menu.Items>
                     <MenuItem Header="File" DataContext="{Binding File}" Template="{StaticResource BlackMenuItem}">
                         <MenuItem Header="New" Command="{Binding NewCommand}" Template="{StaticResource BlackMenuItem}"/>
@@ -91,15 +91,8 @@
                     </MenuItem>
                 </Menu.Items>
             </Menu>
-
-            <Thumb Grid.Column="1"
-                x:Name="headerThumb" 
-                Opacity="0" 
-                Background="{x:Null}" 
-                Foreground="{x:Null}" 
-                DragDelta="headerThumb_DragDelta"/>
-
-            <Button Style="{StaticResource TitleBarButton}" 
+           
+            <Button WindowChrome.IsHitTestVisibleInChrome="True" Style="{StaticResource TitleBarButton}" 
                     Foreground="White" 
                     Command="{Binding MainWindow.MinimizeCommand}"
                     Grid.Column="2">
@@ -111,7 +104,7 @@
 							 RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
 			            StrokeThickness="1" />
             </Button>
-            <Button Style="{StaticResource TitleBarButton}"
+            <Button WindowChrome.IsHitTestVisibleInChrome="True" Style="{StaticResource TitleBarButton}"
                     Foreground="White"
                     Command="{Binding MainWindow.MaximizeCommand}"
                     Grid.Column="3"
@@ -124,7 +117,7 @@
 							 RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
 			        StrokeThickness="1" />
             </Button>
-            <Button Style="{StaticResource TitleBarButton}"
+            <Button WindowChrome.IsHitTestVisibleInChrome="True" Style="{StaticResource TitleBarButton}"
                     Foreground="White"
                     Command="{Binding MainWindow.NormalCommand}"
                     Grid.Column="3"
@@ -137,7 +130,7 @@
 							 RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
 			        StrokeThickness="1" />
             </Button>
-            <Button Style="{StaticResource TitleBarCloseButton}"
+            <Button WindowChrome.IsHitTestVisibleInChrome="True" Style="{StaticResource TitleBarCloseButton}"
                     Foreground="White"
                     Grid.Column="4"
                     Command="{Binding MainWindow.CloseCommand}">

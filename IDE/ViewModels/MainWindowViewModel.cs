@@ -20,13 +20,27 @@ namespace IDE.ViewModels
         public WindowState CurrentState
         {
             get { return _currentState; }
-            set { OnPropertyChanged(ref _currentState, value); }
+            set 
+            {
+                OnPropertyChanged(ref _currentState, value);
+                if (value == WindowState.Maximized)
+                    Thickness = new Thickness(SystemParameters.WindowResizeBorderThickness.Left +4, SystemParameters.WindowResizeBorderThickness.Top+4, SystemParameters.WindowResizeBorderThickness.Right+4, SystemParameters.WindowResizeBorderThickness.Bottom+4);
+                else
+                    Thickness = new Thickness(1);                
+            }
         }
+
+        private Thickness _thickness = new Thickness(1);
+
+        public Thickness Thickness
+        {
+            get { return _thickness; }
+            set { OnPropertyChanged(ref _thickness, value); }
+        }
+
 
         public MainWindowViewModel()
         {
-            //CurrentState = WindowState.Maximized;
-
             MinimizeCommand = new RelayCommand(Minimize);
             MaximizeCommand = new RelayCommand(Maximize);
             NormalCommand = new RelayCommand(Normal);

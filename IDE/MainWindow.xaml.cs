@@ -24,11 +24,5 @@ namespace IDE
         {
             InitializeComponent();
         }
-
-        private void headerThumb_DragDelta(object sender, System.Windows.Controls.Primitives.DragDeltaEventArgs e)
-        {
-            Left += e.HorizontalChange;
-            Top += e.VerticalChange;
-        }
     }
 }
