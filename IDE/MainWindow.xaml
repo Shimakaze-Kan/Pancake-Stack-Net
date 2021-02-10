@@ -74,9 +74,10 @@
                         <MenuItem Header="Save" Command="{Binding SaveCommand}" Template="{StaticResource BlackMenuItem}"/>
                         <MenuItem Header="Save As" Command="{Binding SaveAsCommand}" Template="{StaticResource BlackMenuItem}"/>
                     </MenuItem>
-                    <MenuItem Header="Format" DataContext="{Binding Editor}" Template="{StaticResource BlackMenuItem}">
-                        <MenuItem Header="Format" Command="{Binding FormatCommand}" Template="{StaticResource BlackMenuItem}"/>
-                        <MenuItem Header="Word Wrap" Command="{Binding WrapCommand}" Template="{StaticResource BlackMenuItem}"/>
+                    <MenuItem Header="Format" Template="{StaticResource BlackMenuItem}">
+                        <MenuItem Header="Format" Command="{Binding Editor.FormatCommand}" Template="{StaticResource BlackMenuItem}"/>
+                        <MenuItem Header="Replace" Command="{Binding Replace.ChangeVisiblilityOfReplaceWindowCommand}" Template="{StaticResource BlackMenuItem}"/>
+                        <MenuItem Header="Word Wrap" Command="{Binding Editor.WrapCommand}" Template="{StaticResource BlackMenuItem}"/>
                     </MenuItem>
                     <MenuItem Header="Debugger" Template="{StaticResource BlackMenuItem}">
                         <MenuItem Header="-nonewline flag" IsCheckable="True" IsChecked="{Binding Debugger.DebuggerFlags.NoNewLineFlag, Mode=TwoWay}" Template="{StaticResource BlackMenuItem}"/>
