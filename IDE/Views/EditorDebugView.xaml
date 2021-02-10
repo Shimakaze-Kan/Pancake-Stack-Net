@@ -30,7 +30,7 @@
                     </Grid.ColumnDefinitions>
 
                     <ItemsControl Grid.Column="0" 
-                                  ItemsSource="{Binding Editor.Document.LineNumber}" 
+                                  ItemsSource="{Binding Editor.Document.LineNumber, Mode=OneTime}" 
                                   FontFamily="{Binding Editor.Format.Family}" 
                                   FontSize="{Binding Editor.Format.Size}" 
                                   Foreground="#258FAD" Background="#161616">
