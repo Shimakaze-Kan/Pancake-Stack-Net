@@ -102,6 +102,11 @@ namespace IDE.ViewModels
 
             var validateCode = new ValidateSourceCode(Document.Text);
             _mapRealLineNumbersWithRaw = validateCode.MapRealLineNumbersWithRaw();
+            if (!validateCode.CheckIfCodeEndsWithEatAllOfThePancakesInstruction())
+            {
+                Console.ConsoleText = "The code must end with an \"Eat all of the pancakes!\" instruction";
+                return;
+            }
 
             if (validateCode.ValidateInstructions().Item1)
             {                
@@ -127,6 +132,11 @@ namespace IDE.ViewModels
             {
                 var validateCode = new ValidateSourceCode(Document.Text);
                 _mapRealLineNumbersWithRaw = validateCode.MapRealLineNumbersWithRaw();
+                if (!validateCode.CheckIfCodeEndsWithEatAllOfThePancakesInstruction())
+                {
+                    Console.ConsoleText = "The code must end with an \"Eat all of the pancakes!\" instruction";
+                    return;
+                }
 
                 if (validateCode.ValidateInstructions().Item1)
                 {                    

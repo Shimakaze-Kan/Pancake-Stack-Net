@@ -115,7 +115,7 @@ namespace IDE
                     break;
                 case "Show me a pancake!":
                     if (CheckPancakeStackCount(1))
-                        NewOutputEvent(this, new OutputEventArgs() { Type = OutputType.Character, CharacterOutput = (char)PancakeStack.Peek() });
+                        NewOutputEvent?.Invoke(this, new OutputEventArgs() { Type = OutputType.Character, CharacterOutput = (char)PancakeStack.Peek() });
                     break;
                 case "Take from the top pancakes!":
                     {
@@ -167,7 +167,7 @@ namespace IDE
                     {
                         var match = Regex.Match(label, @"If the pancake isn't tasty, go over to ""(.*)"".");
 
-                        if (CheckPancakeStackCount(1) || CheckIfLabelExist(match.Groups[1].Value))
+                        if (CheckPancakeStackCount(1) && CheckIfLabelExist(match.Groups[1].Value))
                         {
                             if (PancakeStack.Peek() == 0)
                             {
@@ -180,7 +180,7 @@ namespace IDE
                     {
                         var match = Regex.Match(label, @"If the pancake is tasty, go over to ""(.*)"".");
 
-                        if (CheckPancakeStackCount(1) || CheckIfLabelExist(match.Groups[1].Value))
+                        if (CheckPancakeStackCount(1) && CheckIfLabelExist(match.Groups[1].Value))
                         {
                             if (PancakeStack.Peek() != 0)
                             {
