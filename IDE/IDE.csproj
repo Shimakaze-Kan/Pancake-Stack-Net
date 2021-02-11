@@ -63,10 +63,8 @@
     <Compile Include="Converters\ListKeyValuePairTupleToCountConverter.cs" />
     <Compile Include="Converters\NumericInputTypeToVisibilityConverter.cs" />
     <Compile Include="Converters\ListInt32ToCountConverter.cs" />
-    <Compile Include="Converters\WindowStateMaximizedToResizeModeConverter.cs" />
     <Compile Include="Converters\WindowStateMaximizedToVisibleConverter.cs" />
     <Compile Include="Converters\WindowStateMinimizedToVisibleConverter.cs" />
-    <Compile Include="Converters\WindowStateToCorrectMarginConverter.cs" />
     <Compile Include="FocusExtension.cs" />
     <Compile Include="Views\FormatDialog.xaml.cs">
       <DependentUpon>FormatDialog.xaml</DependentUpon>

@@ -37,8 +37,6 @@
         <converter:BoolToVisiblilityConverter x:Key="BoolToVisiblilityConverter"/>
         <converter:WindowStateMaximizedToVisibleConverter x:Key="WindowStateMaximizedToVisibleConverter"/>
         <converter:WindowStateMinimizedToVisibleConverter x:Key="WindowStateMinimizedToVisibleConverter"/>
-        <converter:WindowStateToCorrectMarginConverter x:Key="WindowStateToCorrectMarginConverter"/>
-        <converter:WindowStateMaximizedToResizeModeConverter x:Key="WindowStateMaximizedToResizeModeConverter"/>
         <converter:AlphanumericInputTypeToVisibilityConverter x:Key="AlphanumericInputTypeToVisibilityConverter"/>
         <converter:NumericInputTypeToVisibilityConverter x:Key="NumericInputTypeToVisibilityConverter"/>
     </Window.Resources>
