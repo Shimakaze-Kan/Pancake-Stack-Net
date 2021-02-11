@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace IDE.ViewModels
@@ -31,6 +32,13 @@ namespace IDE.ViewModels
 
         private void Compile()
         {
+            if(!File.Exists("PancakeStack_Compiler.exe"))
+            {
+                MessageBox.Show("Compiler not found, make sure it exists in the same folder as the IDE and is not occupied by another process",
+                    "Compiler does not exist", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             List<string> flags = new List<string>();
             if (CompilerFlags.WaitFlag)
                 flags.Add("-wait");
