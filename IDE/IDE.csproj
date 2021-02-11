@@ -68,7 +68,7 @@
     <Compile Include="Converters\WindowStateMinimizedToVisibleConverter.cs" />
     <Compile Include="Converters\WindowStateToCorrectMarginConverter.cs" />
     <Compile Include="FocusExtension.cs" />
-    <Compile Include="FormatDialog.xaml.cs">
+    <Compile Include="Views\FormatDialog.xaml.cs">
       <DependentUpon>FormatDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="EmbeddedInterpreter.cs" />
@@ -104,11 +104,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="FormatDialog.xaml">
+    <Page Include="Views\FormatDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainWindow.xaml">
+    <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -116,7 +116,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
