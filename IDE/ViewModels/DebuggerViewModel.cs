@@ -204,7 +204,7 @@ namespace IDE.ViewModels
         private void AddHandlersToInterpreterThread(DebugMode debugMode)
         {            
             _embeddedInterpreter.NewOutputEvent +=
-            new EventHandler<OutputEventArgs>(delegate (Object o, OutputEventArgs a) // TODO change to dispatcher
+            new EventHandler<OutputEventArgs>(delegate (Object o, OutputEventArgs a)
                 {
                     if (a.Type == OutputType.Character)
                         Console.ConsoleText += a.CharacterOutput;

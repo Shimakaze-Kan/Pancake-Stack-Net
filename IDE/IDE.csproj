@@ -54,7 +54,7 @@
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
-    <Compile Include="AboutDialog.xaml.cs">
+    <Compile Include="Views\AboutDialog.xaml.cs">
       <DependentUpon>AboutDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\AlphanumericInputTypeToVisibilityConverter.cs" />
@@ -98,7 +98,7 @@
       <DependentUpon>EditorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="WaitingForInputEventArgs.cs" />
-    <Page Include="AboutDialog.xaml">
+    <Page Include="Views\AboutDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -157,8 +157,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="pancakes-575795_640.png" />
+    <Resource Include="Images\pancakes-575795_640.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Views\pancakes-575795_640.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

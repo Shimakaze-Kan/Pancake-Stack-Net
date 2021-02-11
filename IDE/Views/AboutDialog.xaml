@@ -23,10 +23,10 @@
 
         <TextBlock Text="✕" Width="19" Foreground="White" FontSize="20" HorizontalAlignment="Right" Margin="0,8,10,0" MouseDown="TextBlock_MouseDown" />
         <Image Grid.Row="1" Source="pancakes-575795_640.png" Width="201" Margin="0"/>
-        <TextBlock Grid.Row="2" Text="Pancake Stack Editor" FontSize="24" Foreground="White" HorizontalAlignment="Center"/>
+        <TextBlock Grid.Row="2" Text="Pancake Stack IDE" FontSize="24" Foreground="White" HorizontalAlignment="Center"/>
         <TextBlock Grid.Row="3" Text="Author: Shimakaze-Kan" Foreground="White" Margin="0,20,0,0" HorizontalAlignment="Center" FontSize="16"/>
         <DockPanel Grid.Row="4" VerticalAlignment="Bottom">
-            <TextBlock DockPanel.Dock="Bottom" Text="Licence: MIT" Foreground="White" Margin="20,0,0,10"/>
+            <TextBlock DockPanel.Dock="Bottom" Text="Licence: MS-PL" Foreground="White" Margin="20,0,0,10"/>
         </DockPanel>
     </Grid>
 </Window>

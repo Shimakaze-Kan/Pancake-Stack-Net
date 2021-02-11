@@ -48,8 +48,7 @@ namespace IDE.ViewModels
             process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
             process.StartInfo.CreateNoWindow = true;
 
-            process.OutputDataReceived += new DataReceivedEventHandler((_, e) => _console.ConsoleText += e.Data + Environment.NewLine);
-            //process.ErrorDataReceived += new DataReceivedEventHandler((_, e) => _console.ConsoleText += "Error" + e.Data + Environment.NewLine);
+            process.OutputDataReceived += new DataReceivedEventHandler((_, e) => _console.ConsoleText += e.Data + Environment.NewLine);            
 
             process.Start();
             process.BeginOutputReadLine();

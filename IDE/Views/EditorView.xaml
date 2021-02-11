@@ -61,8 +61,6 @@
                                  DataContext="{Binding Editor}"
                                  FontFamily="{Binding Format.Family}"
                                  FontSize="{Binding Format.Size}"
-                                 FontStyle="{Binding Format.Style}"
-                                 FontWeight="{Binding Format.Weight}"
                                  TextWrapping="{Binding Format.Wrap}"
                                  AcceptsReturn="True"
                                  AcceptsTab="True"
