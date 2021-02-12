@@ -23,6 +23,7 @@ namespace PancakeStack_Compiler
             string[] allCompilerFlags = new string[] { "-wait", "-nonewline" };
             List<string> compilerFlags = new List<string>();
 
+            //Check what flags have been passed
             foreach (var flag in allCompilerFlags)
             {
                 if(args.Any(item => item == flag))

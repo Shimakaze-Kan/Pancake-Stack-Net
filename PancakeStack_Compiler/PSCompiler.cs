@@ -11,14 +11,14 @@ namespace PancakeStack_Compiler
 {
     public static class PSCompiler
     {
-        private static FieldBuilder accumulator1;
-        private static FieldBuilder accumulator2;
-        private static FieldBuilder numInFirst;
-        private static FieldBuilder swapPancakeStack;
-        private static FieldBuilder instructionList;
-        private static FieldBuilder programInstructionIterator;
-        private static FieldBuilder labelDictionary;
-        //private static Dictionary<string, Label> labelDictionary = new Dictionary<string, Label>();
+        private static FieldBuilder accumulator1; //Internal accumulator used for conditional instructions
+        private static FieldBuilder accumulator2; //Internal accumulator used for conditional instructions
+        private static FieldBuilder numInFirst; //Checks if there is an instruction that takes input
+        private static FieldBuilder swapPancakeStack; //A temporary stack of pancakes used to make a copy of the original stack
+        private static FieldBuilder instructionList; //List of actions
+        private static FieldBuilder programInstructionIterator; //Internal variable used to navigate the action list
+        private static FieldBuilder labelDictionary; //Dictionary used to record labels and their corresponding addresses
+
         private static Dictionary<string, MethodBuilder> methodDictionary = new Dictionary<string, MethodBuilder>();
 
         public static void Compile(string assemblyName, string outputFileName, string[] sourceCode, List<string> compilerFlags)
@@ -32,6 +32,7 @@ namespace PancakeStack_Compiler
             var mainClassTypeName = assemblyName + ".PSProgram";
             var type = module.DefineType(mainClassTypeName, TypeAttributes.Class | TypeAttributes.Sealed | TypeAttributes.Abstract | TypeAttributes.Public); //cheat to make it static
 
+            //Create internal variables
             accumulator1 = type.DefineField("accumulator1", typeof(int), FieldAttributes.Static | FieldAttributes.Private);
             accumulator2 = type.DefineField("accumulator2", typeof(int), FieldAttributes.Static | FieldAttributes.Private);
             numInFirst = type.DefineField("numInFirst", typeof(bool), FieldAttributes.Static | FieldAttributes.Private);
@@ -55,21 +56,13 @@ namespace PancakeStack_Compiler
             
             ilGen.Emit(OpCodes.Newobj, typeof(Dictionary<string,int>).GetConstructor(Type.EmptyTypes));
             ilGen.Emit(OpCodes.Stsfld, labelDictionary);
-            //////ilGen.Emit(OpCodes.Call, testMethod);
-            ///
-
-
-            //ilGen.Emit(OpCodes.Ldsfld, instructionList);
-            //ilGen.Emit(OpCodes.Ldc_I4_0);
-            //ilGen.Emit(OpCodes.Callvirt, typeof(List<Action>).GetMethod("get_Item"));
-            //ilGen.Emit(OpCodes.Callvirt, typeof(Action).GetMethod("Invoke"));
 
             
             MethodBuilder method = null;
 
             for (int i = 0; i < sourceCode.Length; i++)
             {
-                
+                //Iterates instructions and generates functions, if a function already exists it does not create it
                 switch (sourceCode[i])
                 {
                     case var word when new Regex(@"Put this ([^ ]*?) pancake on top!").IsMatch(word):
@@ -267,6 +260,9 @@ namespace PancakeStack_Compiler
             asm.Save(outputFileName);         
         }
 
+        /// <summary>
+        /// Generates a parameterless constructor
+        /// </summary>
         private static void GenerateConstructorBody(ILGenerator ilGen, FieldInfo pancakeStackField)
         {
             ilGen.Emit(OpCodes.Nop);
@@ -364,11 +360,6 @@ namespace PancakeStack_Compiler
             ilGen.Emit(OpCodes.Brtrue, startLabel);
 
             ilGen.MarkLabel(endIfLabel);
-
-            //ilGen.Emit(OpCodes.Call, typeof(Console).GetMethod("ReadLine", BindingFlags.Public | BindingFlags.Static));
-            //ilGen.Emit(OpCodes.Pop);
-            //ilGen.MarkLabel(endOfIfLabel);
-
 
             ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
             ilGen.Emit(OpCodes.Call, typeof(Console).GetMethod("ReadLine", BindingFlags.Public | BindingFlags.Static));
@@ -730,6 +721,10 @@ namespace PancakeStack_Compiler
             ilGen.Emit(OpCodes.Ret);
         }
 
+        /// <summary>
+        /// Generates code to add method to the action list
+        /// </summary>
+        /// <param name="method">Method to be added</param>
         private static void GenerateAddInstructionToInstructionList(ILGenerator ilGen, MethodBuilder method)
         {
             ilGen.Emit(OpCodes.Ldsfld, instructionList);
