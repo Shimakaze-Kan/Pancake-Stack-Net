@@ -56,6 +56,7 @@ In addition to the language specification, here is an additional instruction:
 | Code | Meaning|
 |---|---|
 | Show me a numeric pancake! | Output the top value on the stack as a number, but don't pop it.|
+
 The instruction does not appear in the "specification", but I think adding it here was necessary.
 
 Instruction adds a newline character when called, regardless of the "-nonewline" flag in the debugger or compiler.
