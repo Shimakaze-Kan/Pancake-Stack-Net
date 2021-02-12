@@ -163,4 +163,8 @@
     <Resource Include="Views\pancakes-575795_640.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if $(ConfigurationName) == Debug xcopy /y "$(SolutionDir)PancakeStack_Compiler\bin\Debug\*.*" "$(TargetDir)"
+if $(ConfigurationName) == Release xcopy /y "$(SolutionDir)PancakeStack_Compiler\bin\Release\*.*" "$(TargetDir)"</PostBuildEvent>
+  </PropertyGroup>
 </Project>
