@@ -12,6 +12,9 @@ namespace IDE
         Line
     }
 
+    /// <summary>
+    /// Helper class to determine what type of data is being sent
+    /// </summary>
     public class OutputEventArgs : EventArgs
     {
         public OutputType Type { get; set; }

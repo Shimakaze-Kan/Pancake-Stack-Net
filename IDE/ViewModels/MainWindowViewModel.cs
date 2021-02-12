@@ -32,6 +32,9 @@ namespace IDE.ViewModels
 
         private Thickness _thickness = new Thickness(1);
 
+        /// <summary>
+        /// Determines the thickness of the window frame depending on the state of the window
+        /// </summary>
         public Thickness Thickness
         {
             get { return _thickness; }

@@ -10,6 +10,9 @@ using System.Windows.Input;
 
 namespace IDE.ViewModels
 {
+    /// <summary>
+    /// Main viewmodel class, keeps all models up to date among all viewmodels
+    /// </summary>
     public class MainViewModel
     {
         private DocumentModel _document;

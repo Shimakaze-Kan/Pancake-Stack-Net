@@ -32,6 +32,9 @@ namespace IDE.ViewModels
             ZoomOutEditorCommand = new RelayCommand(ZoomOutEditor);
         }
 
+        /// <summary>
+        /// Changes text wrap behavior
+        /// </summary>
         private void ToggleWrap()
         {
             if(Format.Wrap == System.Windows.TextWrapping.Wrap)
@@ -53,12 +56,18 @@ namespace IDE.ViewModels
             formatDialog.ShowDialog();
         }
 
+        /// <summary>
+        /// Increases font size
+        /// </summary>
         private void ZoomInEditor()
         {
             if (Format.Size < 30)
                 Format.Size++;
         }
 
+        /// <summary>
+        /// Reduces font size
+        /// </summary>
         private void ZoomOutEditor()
         {
             if (Format.Size > 5)

@@ -30,6 +30,10 @@ namespace IDE.ViewModels
             CompileCommand = new RelayCommand(Compile, () => !string.IsNullOrEmpty(_document.FilePath) && !string.IsNullOrEmpty(_document.FileName));
         }
 
+        /// <summary>
+        /// Checks if compiler exists, if not it displays message box with appropriate 
+        /// message, if yes it runs process then receives message if compilation succeeded or not
+        /// </summary>
         private void Compile()
         {
             if(!File.Exists("PancakeStack_Compiler.exe"))

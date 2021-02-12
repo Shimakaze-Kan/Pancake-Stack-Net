@@ -22,6 +22,11 @@ namespace IDE
             _sourceCode = RemoveWhiteCharactersAndComments(rawSourceCode);
         }
 
+        /// <summary>
+        /// Performs comment removal, leaving blank lines if any
+        /// </summary>
+        /// <param name="rawSourceCode">Raw source code</param>
+        /// <returns>Table of lines without comments</returns>
         private string[] RemoveWhiteCharactersAndComments(string rawSourceCode)
         {
             Regex matchMultipleSpaces = new Regex(@"[ ]{2,}", RegexOptions.None);
@@ -31,6 +36,13 @@ namespace IDE
                 .Select(x => Regex.Replace(x, @"\/\/.*", string.Empty).Trim()).ToArray();
         }
 
+        /// <summary>
+        /// Checks whether each line of code is correct
+        /// </summary>
+        /// <returns>Returns a Tuple<bool,int>, if all is correct then the first element 
+        /// of the tuple is true and the second element is 0, if not then the first element 
+        /// of the tuple is false and the second element contains the line number where 
+        /// the faulty instruction occurs</returns>
         public Tuple<bool, int> ValidateInstructions()
         {
             var sourceCode = _sourceCode.Where(x => !string.IsNullOrEmpty(x)).ToArray();
@@ -83,6 +95,11 @@ namespace IDE
             return new Tuple<bool, int>(true, 0);
         }
 
+        /// <summary>
+        /// Matches line numbers after removing comments and blanks with raw code
+        /// </summary>
+        /// <returns>Returns a dictionary, where the keys are line numbers of the processed 
+        /// lines and the values are line numbers of the raw code</returns>
         public Dictionary<int,int> MapRealLineNumbersWithRaw()
         {
             int lineNumer = 0;
@@ -97,6 +114,10 @@ namespace IDE
             return mapCollection;
         }
 
+        /// <summary>
+        /// Checks if the last line of code is an "Eat all of the pancakes!" instruction
+        /// </summary>
+        /// <returns>true or false</returns>
         public bool CheckIfCodeEndsWithEatAllOfThePancakesInstruction()
         {
             for (int i = _sourceCode.Length - 1; i >= 0; i--)

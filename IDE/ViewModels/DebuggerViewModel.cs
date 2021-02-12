@@ -43,12 +43,18 @@ namespace IDE.ViewModels
             set { OnPropertyChanged(ref _currentView, value); }
         }
 
+        /// <summary>
+        /// Indicates whether debugging is currently in progress
+        /// </summary>
         public bool IsDebuggingMode
         {
             get { return _isDebuggingMode; }
             set { OnPropertyChanged(ref _isDebuggingMode, value); }
         }
 
+        /// <summary>
+        /// Determines whether the current interpreter process is waiting for text to be sent
+        /// </summary>
         public bool IsTaskWaitingForInput
         {
             get { return _isTaskWaitingForInput; }
@@ -94,6 +100,9 @@ namespace IDE.ViewModels
             NextInstructionCommand = new RelayCommand(NextInstruction, () => !string.IsNullOrEmpty(Document.Text) && !_isTaskRunning);
         }
 
+        /// <summary>
+        /// Validates the code and runs it in the built-in interpreter in a new thread
+        /// </summary>
         private void RunInterpreter()
         {
             EndCurrentInterpreterTask();
@@ -126,6 +135,9 @@ namespace IDE.ViewModels
             }
         }
 
+        /// <summary>
+        /// Validates the code and runs it in the built-in interpreter with only one instruction per call in a new thread
+        /// </summary>
         private void NextInstruction()
         {
             if (!IsDebuggingMode)
@@ -180,6 +192,9 @@ namespace IDE.ViewModels
             }
         }
 
+        /// <summary>
+        /// Sends input to the interpreter thread and unlocks it
+        /// </summary>
         private void SendInput()
         {
             if(DebuggerFlags.NoInputInConsoleFlag == false)
@@ -192,6 +207,9 @@ namespace IDE.ViewModels
             Console.InputText = "";
         }
 
+        /// <summary>
+        /// Sends a request to stop the interpreter thread
+        /// </summary>
         private void EndCurrentInterpreterTask()
         {
             _cancellationTokenSource?.Cancel();
@@ -211,6 +229,10 @@ namespace IDE.ViewModels
             InputType = null;
         }
 
+        /// <summary>
+        /// Adds handlers to communicate with the interpreter thread
+        /// </summary>
+        /// <param name="debugMode"></param>
         private void AddHandlersToInterpreterThread(DebugMode debugMode)
         {            
             _embeddedInterpreter.NewOutputEvent +=
