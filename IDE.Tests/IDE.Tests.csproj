@@ -52,6 +52,7 @@
     <Compile Include="EmbeddedInterpreterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ValidateSourceCodeTests.cs" />
+    <Compile Include="ViewModels\DebuggerViewModelTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
