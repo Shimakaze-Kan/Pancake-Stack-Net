@@ -103,6 +103,9 @@ namespace PancakeStack_Compiler
             {
                 if (_sourceCode[i] == "Eat all of the pancakes!")
                     return true;
+
+                if (!string.IsNullOrEmpty(_sourceCode[i]))
+                    break;
             }
 
             return false;
