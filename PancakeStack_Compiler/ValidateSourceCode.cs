@@ -96,5 +96,16 @@ namespace PancakeStack_Compiler
 
             return mapCollection;
         }
+
+        public bool CheckIfCodeEndsWithEatAllOfThePancakesInstruction()
+        {
+            for (int i = _sourceCode.Length - 1; i >= 0; i--)
+            {
+                if (_sourceCode[i] == "Eat all of the pancakes!")
+                    return true;
+            }
+
+            return false;
+        }
     }
 }

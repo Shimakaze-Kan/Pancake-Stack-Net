@@ -34,6 +34,13 @@ namespace PancakeStack_Compiler
             var sourceCode = File.ReadAllText(sourceFileName);
 
             var validateCode = new ValidateSourceCode(sourceCode);
+
+            if(!validateCode.CheckIfCodeEndsWithEatAllOfThePancakesInstruction())
+            {
+                Console.WriteLine("The code must end with an \"Eat all of the pancakes!\" instruction");
+                return;
+            }
+
             var validationResult = validateCode.ValidateInstructions();
 
             if (validationResult.Item1)
@@ -43,7 +50,7 @@ namespace PancakeStack_Compiler
             }
             else
             {
-                Console.WriteLine($"Error: Instruction on line {validationResult.Item2} cannot be found");
+                Console.WriteLine($"Error: Instruction on line {validateCode.MapRealLineNumbersWithRaw()[validationResult.Item2] + 1} cannot be found");
             }
         }
     }

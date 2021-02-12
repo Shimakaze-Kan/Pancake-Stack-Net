@@ -700,7 +700,7 @@ namespace PancakeStack_Compiler
 
             ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
             ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("Peek"));
-            ilGen.Emit(OpCodes.Call, typeof(Console).GetMethod("Write", BindingFlags.Public | BindingFlags.Static, null, new Type[] { typeof(Int32) }, null));
+            ilGen.Emit(OpCodes.Call, typeof(Console).GetMethod("WriteLine", BindingFlags.Public | BindingFlags.Static, null, new Type[] { typeof(Int32) }, null));
 
             ilGen.Emit(OpCodes.Ret);
         }
