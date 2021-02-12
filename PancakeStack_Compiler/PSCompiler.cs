@@ -11,25 +11,31 @@ namespace PancakeStack_Compiler
 {
     public static class PSCompiler
     {
-        private static FieldBuilder accumulator1;
-        private static FieldBuilder accumulator2;
-        private static FieldBuilder swapPancakeStack;
-        private static FieldBuilder instructionList;
-        private static FieldBuilder programInstructionIterator;
-        private static FieldBuilder labelDictionary;
-        //private static Dictionary<string, Label> labelDictionary = new Dictionary<string, Label>();
+        private static FieldBuilder accumulator1; //Internal accumulator used for conditional instructions
+        private static FieldBuilder accumulator2; //Internal accumulator used for conditional instructions
+        private static FieldBuilder numInFirst; //Checks if there is an instruction that takes input
+        private static FieldBuilder swapPancakeStack; //A temporary stack of pancakes used to make a copy of the original stack
+        private static FieldBuilder instructionList; //List of actions
+        private static FieldBuilder programInstructionIterator; //Internal variable used to navigate the action list
+        private static FieldBuilder labelDictionary; //Dictionary used to record labels and their corresponding addresses
+
         private static Dictionary<string, MethodBuilder> methodDictionary = new Dictionary<string, MethodBuilder>();
 
-        public static void Compile(string assemblyName, string outputFileName, string[] sourceCode, bool compilerFlag)
+        public static void Compile(string assemblyName, string outputFileName, string[] sourceCode, List<string> compilerFlags)
         {
+            bool noNewLineFlag = compilerFlags.Any(item => item == "-nonewline");
+            bool waitFlag = compilerFlags.Any(item => item == "-wait");
+
             var asm = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName(assemblyName), AssemblyBuilderAccess.Save);
             var module = asm.DefineDynamicModule(assemblyName, outputFileName);
 
             var mainClassTypeName = assemblyName + ".PSProgram";
             var type = module.DefineType(mainClassTypeName, TypeAttributes.Class | TypeAttributes.Sealed | TypeAttributes.Abstract | TypeAttributes.Public); //cheat to make it static
 
+            //Create internal variables
             accumulator1 = type.DefineField("accumulator1", typeof(int), FieldAttributes.Static | FieldAttributes.Private);
             accumulator2 = type.DefineField("accumulator2", typeof(int), FieldAttributes.Static | FieldAttributes.Private);
+            numInFirst = type.DefineField("numInFirst", typeof(bool), FieldAttributes.Static | FieldAttributes.Private);
             swapPancakeStack = type.DefineField("swapPancakeStack", typeof(Stack<int>), FieldAttributes.Static | FieldAttributes.Private);
             instructionList = type.DefineField("instructionList", typeof(List<Action>), FieldAttributes.Static | FieldAttributes.Private);
             programInstructionIterator = type.DefineField("programInstructionIterator", typeof(int), FieldAttributes.Static | FieldAttributes.Private);
@@ -50,21 +56,13 @@ namespace PancakeStack_Compiler
             
             ilGen.Emit(OpCodes.Newobj, typeof(Dictionary<string,int>).GetConstructor(Type.EmptyTypes));
             ilGen.Emit(OpCodes.Stsfld, labelDictionary);
-            //////ilGen.Emit(OpCodes.Call, testMethod);
-            ///
-
-
-            //ilGen.Emit(OpCodes.Ldsfld, instructionList);
-            //ilGen.Emit(OpCodes.Ldc_I4_0);
-            //ilGen.Emit(OpCodes.Callvirt, typeof(List<Action>).GetMethod("get_Item"));
-            //ilGen.Emit(OpCodes.Callvirt, typeof(Action).GetMethod("Invoke"));
 
             
             MethodBuilder method = null;
 
             for (int i = 0; i < sourceCode.Length; i++)
             {
-                
+                //Iterates instructions and generates functions, if a function already exists it does not create it
                 switch (sourceCode[i])
                 {
                     case var word when new Regex(@"Put this ([^ ]*?) pancake on top!").IsMatch(word):
@@ -103,7 +101,7 @@ namespace PancakeStack_Compiler
                     case "How about a hotcake?":
                         if (!methodDictionary.TryGetValue("HowAboutAHotcake", out method))
                         {
-                            GenerateHowAboutAHotcakeMethod(pancakeStackField, type);
+                            GenerateHowAboutAHotcakeMethod(pancakeStackField, noNewLineFlag, type);
                             method = methodDictionary["HowAboutAHotcake"];
                         }
                         break;
@@ -205,13 +203,16 @@ namespace PancakeStack_Compiler
                         break;
 
                     case "Eat all of the pancakes!":
-                        //TODO full program return flow
-                        goto end_of_compile_loop; //Probably the only situation where goto is a good practice
+                        if (!methodDictionary.TryGetValue("EatAllOfThePancakes", out method))
+                        {
+                            GenerateEatAllOfThePancakesMethod(waitFlag, type);
+                            method = methodDictionary["EatAllOfThePancakes"];
+                        }
+                        break;
                 }
 
                 GenerateAddInstructionToInstructionList(ilGen, method);
             }
-            end_of_compile_loop:
 
 
             ilGen.Emit(OpCodes.Ldc_I4_0);
@@ -241,9 +242,15 @@ namespace PancakeStack_Compiler
             ilGen.Emit(OpCodes.Clt);
             ilGen.Emit(OpCodes.Brtrue, startLoopLabel);
 
-            if (compilerFlag)
+            if (waitFlag)
             {
-                ilGen.Emit(OpCodes.Call, typeof(Console).GetMethod("ReadLine", BindingFlags.Public | BindingFlags.Static));
+                if(methodDictionary.TryGetValue("HowAboutAHotcake", out _))
+                {
+                    ilGen.Emit(OpCodes.Call, typeof(Console).GetMethod("ReadLine"));
+                    ilGen.Emit(OpCodes.Pop);
+                }
+
+                ilGen.Emit(OpCodes.Call, typeof(Console).GetMethod("ReadLine"));
                 ilGen.Emit(OpCodes.Pop);
             }
 
@@ -253,6 +260,9 @@ namespace PancakeStack_Compiler
             asm.Save(outputFileName);         
         }
 
+        /// <summary>
+        /// Generates a parameterless constructor
+        /// </summary>
         private static void GenerateConstructorBody(ILGenerator ilGen, FieldInfo pancakeStackField)
         {
             ilGen.Emit(OpCodes.Nop);
@@ -319,6 +329,37 @@ namespace PancakeStack_Compiler
             methodDictionary["GiveMeAPancake"] = method;
 
             var ilGen = method.GetILGenerator();
+            var startLabel = ilGen.DefineLabel();
+            var conditionLabel = ilGen.DefineLabel();
+            var endIfLabel = ilGen.DefineLabel();
+            var loopLabel = ilGen.DefineLabel();
+
+            ilGen.Emit(OpCodes.Ldsfld, numInFirst);
+            ilGen.Emit(OpCodes.Ldc_I4_0);
+            ilGen.Emit(OpCodes.Ceq);
+            ilGen.Emit(OpCodes.Brfalse_S, loopLabel);
+
+            ilGen.Emit(OpCodes.Ldc_I4_1);
+            ilGen.Emit(OpCodes.Stsfld, numInFirst);
+            ilGen.Emit(OpCodes.Br, endIfLabel);
+
+            ilGen.MarkLabel(loopLabel);
+            ilGen.Emit(OpCodes.Br, conditionLabel);
+            ilGen.MarkLabel(startLabel);
+            ilGen.Emit(OpCodes.Call, typeof(Console).GetMethod("get_In"));
+            ilGen.Emit(OpCodes.Callvirt, typeof(System.IO.TextReader).GetMethod("Read", new Type[] { }));
+            ilGen.Emit(OpCodes.Pop);
+
+            ilGen.MarkLabel(conditionLabel);
+            ilGen.Emit(OpCodes.Call, typeof(Console).GetMethod("get_In"));
+            ilGen.Emit(OpCodes.Callvirt, typeof(System.IO.TextReader).GetMethod("Peek"));
+            ilGen.Emit(OpCodes.Ldc_I4_M1);
+            ilGen.Emit(OpCodes.Ceq);
+            ilGen.Emit(OpCodes.Ldc_I4_0);
+            ilGen.Emit(OpCodes.Ceq);
+            ilGen.Emit(OpCodes.Brtrue, startLabel);
+
+            ilGen.MarkLabel(endIfLabel);
 
             ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
             ilGen.Emit(OpCodes.Call, typeof(Console).GetMethod("ReadLine", BindingFlags.Public | BindingFlags.Static));
@@ -328,16 +369,50 @@ namespace PancakeStack_Compiler
             ilGen.Emit(OpCodes.Ret);
         }
 
-        private static void GenerateHowAboutAHotcakeMethod(FieldInfo pancakeStack, TypeBuilder type)
+        private static void GenerateHowAboutAHotcakeMethod(FieldInfo pancakeStack, bool noNewLineFlag, TypeBuilder type)
         {
             var method = type.DefineMethod("HowAboutAHotcake", MethodAttributes.Public | MethodAttributes.Static);
             methodDictionary["HowAboutAHotcake"] = method;
 
             var ilGen = method.GetILGenerator();
 
-            ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
-            ilGen.Emit(OpCodes.Call, typeof(Console).GetMethod("Read", BindingFlags.Public | BindingFlags.Static));            
-            ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("Push"));
+            ilGen.Emit(OpCodes.Ldc_I4_1);
+            ilGen.Emit(OpCodes.Stsfld, numInFirst);
+
+            if (noNewLineFlag)
+            {
+                var startLabel = ilGen.DefineLabel();
+                var firstConditionLabel = ilGen.DefineLabel();
+                var secondConditionLabel = ilGen.DefineLabel();
+
+                ilGen.MarkLabel(startLabel);
+                ilGen.Emit(OpCodes.Call, typeof(Console).GetMethod("Read"));
+                ilGen.Emit(OpCodes.Stsfld, accumulator1);
+                ilGen.Emit(OpCodes.Ldsfld, accumulator1);
+                ilGen.Emit(OpCodes.Ldc_I4_S, 10);
+                ilGen.Emit(OpCodes.Beq, firstConditionLabel);
+
+                ilGen.Emit(OpCodes.Ldsfld, accumulator1);
+                ilGen.Emit(OpCodes.Ldc_I4_S, 13);
+                ilGen.Emit(OpCodes.Ceq);
+                ilGen.Emit(OpCodes.Br, secondConditionLabel);
+
+                ilGen.MarkLabel(firstConditionLabel);
+                ilGen.Emit(OpCodes.Ldc_I4_1);
+
+                ilGen.MarkLabel(secondConditionLabel);
+                ilGen.Emit(OpCodes.Brtrue, startLabel);
+
+                ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
+                ilGen.Emit(OpCodes.Ldsfld, accumulator1);
+                ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("Push"));
+            }
+            else
+            {
+                ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
+                ilGen.Emit(OpCodes.Call, typeof(Console).GetMethod("Read"));
+                ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("Push"));
+            }
 
             ilGen.Emit(OpCodes.Ret);
         }
@@ -593,7 +668,9 @@ namespace PancakeStack_Compiler
             ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
             ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("Peek"));
             ilGen.Emit(OpCodes.Ldc_I4_0);
-            ilGen.Emit(OpCodes.Cgt);
+            ilGen.Emit(OpCodes.Ceq);
+            ilGen.Emit(OpCodes.Ldc_I4_0);
+            ilGen.Emit(OpCodes.Ceq);
             ilGen.Emit(OpCodes.Brfalse, endLabel);
 
             ilGen.Emit(OpCodes.Ldsfld, labelDictionary);
@@ -614,11 +691,40 @@ namespace PancakeStack_Compiler
 
             ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
             ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("Peek"));
-            ilGen.Emit(OpCodes.Call, typeof(Console).GetMethod("Write", BindingFlags.Public | BindingFlags.Static, null, new Type[] { typeof(Int32) }, null));
+            ilGen.Emit(OpCodes.Call, typeof(Console).GetMethod("WriteLine", BindingFlags.Public | BindingFlags.Static, null, new Type[] { typeof(Int32) }, null));
 
             ilGen.Emit(OpCodes.Ret);
         }
 
+        private static void GenerateEatAllOfThePancakesMethod(bool waitFlag, TypeBuilder type)
+        {
+            var method = type.DefineMethod("EatAllOfThePancakes", MethodAttributes.Public | MethodAttributes.Static);
+            methodDictionary["EatAllOfThePancakes"] = method;
+
+            var ilGen = method.GetILGenerator();
+
+            if(waitFlag)
+            {
+                if (methodDictionary.TryGetValue("HowAboutAHotcake", out _))
+                {
+                    ilGen.Emit(OpCodes.Call, typeof(Console).GetMethod("ReadLine"));
+                    ilGen.Emit(OpCodes.Pop);
+                }
+
+                ilGen.Emit(OpCodes.Call, typeof(Console).GetMethod("ReadLine"));
+                ilGen.Emit(OpCodes.Pop);
+            }
+
+            ilGen.Emit(OpCodes.Ldc_I4_0);
+            ilGen.Emit(OpCodes.Call, typeof(Environment).GetMethod("Exit"));
+
+            ilGen.Emit(OpCodes.Ret);
+        }
+
+        /// <summary>
+        /// Generates code to add method to the action list
+        /// </summary>
+        /// <param name="method">Method to be added</param>
         private static void GenerateAddInstructionToInstructionList(ILGenerator ilGen, MethodBuilder method)
         {
             ilGen.Emit(OpCodes.Ldsfld, instructionList);
@@ -626,6 +732,6 @@ namespace PancakeStack_Compiler
             ilGen.Emit(OpCodes.Ldftn, method);
             ilGen.Emit(OpCodes.Newobj, typeof(Action).GetConstructors()[0]);
             ilGen.Emit(OpCodes.Callvirt, typeof(List<Action>).GetMethod("Add"));
-        }
+        }      
     }
 }

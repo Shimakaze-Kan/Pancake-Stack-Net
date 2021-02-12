@@ -1,0 +1,212 @@
+﻿<Window x:Class="IDE.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:IDE"
+        xmlns:viewmodel="clr-namespace:IDE.ViewModels"
+        xmlns:converter="clr-namespace:IDE.Converters"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800" MinHeight="450" MinWidth="800" Background="#333333"
+        WindowState="{Binding MainWindow.CurrentState, Mode=TwoWay}"
+        BorderBrush="#FF9912"
+        BorderThickness="{Binding MainWindow.Thickness}">
+    
+    <WindowChrome.WindowChrome>
+        <WindowChrome
+            ResizeBorderThickness="5"
+            CaptionHeight="15"
+            NonClientFrameEdges="None"
+            CornerRadius="0"/>
+    </WindowChrome.WindowChrome>
+    <Window.DataContext>
+        <viewmodel:MainViewModel/>
+    </Window.DataContext>
+    <Window.InputBindings>
+        <KeyBinding Key="F5" Command="{Binding Debugger.RunInterpreterCommand}"/>
+        <KeyBinding Modifiers="Ctrl" Key="S" Command="{Binding File.SaveCommand}"/>
+        <KeyBinding Modifiers="Shift" Key="F5" Command="{Binding Debugger.EndCurrentTaskCommand}"/>
+        <KeyBinding Key="F10" Command="{Binding Debugger.NextInstructionCommand}"/>
+        <KeyBinding Modifiers="Ctrl" Key="B" Command="{Binding Compiler.CompileCommand}"/>
+        <KeyBinding Modifiers="Ctrl" Key="R" Command="{Binding Replace.ChangeVisiblilityOfReplaceWindowCommand}"/>
+        <MouseBinding Gesture="{x:Static local:MouseWheelGesture.CtrlDown}" Command="{Binding Editor.ZoomOutEditorCommand}"/>
+        <MouseBinding Gesture="{x:Static local:MouseWheelGesture.CtrlUp}" Command="{Binding Editor.ZoomInEditorCommand}"/>
+    </Window.InputBindings>
+    <Window.Resources>
+        <converter:BottomBarColorConverter x:Key="BottomBarColorConverter"/>
+        <converter:BoolToVisiblilityConverter x:Key="BoolToVisiblilityConverter"/>
+        <converter:WindowStateMaximizedToVisibleConverter x:Key="WindowStateMaximizedToVisibleConverter"/>
+        <converter:WindowStateMinimizedToVisibleConverter x:Key="WindowStateMinimizedToVisibleConverter"/>
+        <converter:AlphanumericInputTypeToVisibilityConverter x:Key="AlphanumericInputTypeToVisibilityConverter"/>
+        <converter:NumericInputTypeToVisibilityConverter x:Key="NumericInputTypeToVisibilityConverter"/>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="0.3*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Grid.Column="0" Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Menu WindowChrome.IsHitTestVisibleInChrome="True" Grid.Column="0" Background="#333333" Foreground="White">
+                <Menu.Items>
+                    <MenuItem Header="File" DataContext="{Binding File}" Template="{StaticResource BlackMenuItem}">
+                        <MenuItem Header="New" Command="{Binding NewCommand}" Template="{StaticResource BlackMenuItem}"/>
+                        <MenuItem Header="Open" Command="{Binding OpenCommand}" Template="{StaticResource BlackMenuItem}"/>
+                        <MenuItem Header="Save" Command="{Binding SaveCommand}" Template="{StaticResource BlackMenuItem}"/>
+                        <MenuItem Header="Save As" Command="{Binding SaveAsCommand}" Template="{StaticResource BlackMenuItem}"/>
+                    </MenuItem>
+                    <MenuItem Header="Format" Template="{StaticResource BlackMenuItem}">
+                        <MenuItem Header="Format" Command="{Binding Editor.FormatCommand}" Template="{StaticResource BlackMenuItem}"/>
+                        <MenuItem Header="Replace" Command="{Binding Replace.ChangeVisiblilityOfReplaceWindowCommand}" Template="{StaticResource BlackMenuItem}"/>
+                        <MenuItem Header="Word Wrap" Command="{Binding Editor.WrapCommand}" Template="{StaticResource BlackMenuItem}"/>
+                    </MenuItem>
+                    <MenuItem Header="Debugger" Template="{StaticResource BlackMenuItem}">
+                        <MenuItem Header="-nonewline flag" IsCheckable="True" IsChecked="{Binding Debugger.DebuggerFlags.NoNewLineFlag, Mode=TwoWay}" Template="{StaticResource BlackMenuItem}"/>
+                        <MenuItem Header="-noinputinconsole flag" IsCheckable="True" IsChecked="{Binding Debugger.DebuggerFlags.NoInputInConsoleFlag, Mode=TwoWay}" Template="{StaticResource BlackMenuItem}"/>
+                    </MenuItem>
+                    <MenuItem Header="Compiler" Template="{StaticResource BlackMenuItem}">
+                        <MenuItem Header="-wait flag" IsCheckable="True" IsChecked="{Binding Compiler.CompilerFlags.WaitFlag, Mode=TwoWay}" Template="{StaticResource BlackMenuItem}"/>
+                        <MenuItem Header="-nonewline flag" IsCheckable="True" IsChecked="{Binding Compiler.CompilerFlags.NoNewLineFlag, Mode=TwoWay}" Template="{StaticResource BlackMenuItem}"/>
+                    </MenuItem>
+                    <MenuItem Header="Help" DataContext="{Binding Help}" Template="{StaticResource BlackMenuItem}">
+                        <MenuItem Header="About" Command="{Binding HelpCommand}" Template="{StaticResource BlackMenuItem}"/>
+                    </MenuItem>
+                </Menu.Items>
+            </Menu>
+           
+            <Button WindowChrome.IsHitTestVisibleInChrome="True" Style="{StaticResource TitleBarButton}" 
+                    Foreground="White" 
+                    Command="{Binding MainWindow.MinimizeCommand}"
+                    Grid.Column="2">
+                <Path
+			            Width="46"
+			            Height="15"
+			            Data="M 18,7.5 H 28"
+			            Stroke="{Binding Path=Foreground,
+							 RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+			            StrokeThickness="1" />
+            </Button>
+            <Button WindowChrome.IsHitTestVisibleInChrome="True" Style="{StaticResource TitleBarButton}"
+                    Foreground="White"
+                    Command="{Binding MainWindow.MaximizeCommand}"
+                    Grid.Column="3"
+                    Visibility="{Binding MainWindow.CurrentState, Converter={StaticResource WindowStateMinimizedToVisibleConverter}}">
+                <Path
+			        Width="46"
+              
+			        Data="M 28,10 L17,10 L17,1 28,1 Z"
+			        Stroke="{Binding Path=Foreground,
+							 RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+			        StrokeThickness="1" />
+            </Button>
+            <Button WindowChrome.IsHitTestVisibleInChrome="True" Style="{StaticResource TitleBarButton}"
+                    Foreground="White"
+                    Command="{Binding MainWindow.NormalCommand}"
+                    Grid.Column="3"
+                    Visibility="{Binding MainWindow.CurrentState, Converter={StaticResource WindowStateMaximizedToVisibleConverter}}">
+                <Path
+			        Width="46"
+              
+			        Data="M 15.5,5.5 H 26.5 V 13.5 H 15.5 Z M 17.5,5.5 V 2.5 H 29.5 V 11.5 H 26.5"
+			        Stroke="{Binding Path=Foreground,
+							 RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+			        StrokeThickness="1" />
+            </Button>
+            <Button WindowChrome.IsHitTestVisibleInChrome="True" Style="{StaticResource TitleBarCloseButton}"
+                    Foreground="White"
+                    Grid.Column="4"
+                    Command="{Binding MainWindow.CloseCommand}">
+                <Path
+			        Width="46"
+			        Data="M 18,1 28,12 M 18,12 28,1"
+			        Stroke="{Binding Path=Foreground,
+							 RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+			        StrokeThickness="1" />
+            </Button>
+
+
+        </Grid>
+
+        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Background="#333333" Margin="5,0,5,0">
+            <Button Content="Run" Command="{Binding Debugger.RunInterpreterCommand}" Style="{StaticResource BlackButton}" ToolTip="F5"/>
+            <Button Content="Stop" Command="{Binding Debugger.EndCurrentTaskCommand}" Style="{StaticResource BlackButton}" ToolTip="Shift+F5"/>
+            <Button Content="Next Instruction" Command="{Binding Debugger.NextInstructionCommand}" Style="{StaticResource BlackButton}" ToolTip="F10"/>
+            <Button Content="Compile" Command="{Binding Compiler.CompileCommand}" Style="{StaticResource BlackButton}" ToolTip="Ctrl+B"/>
+        </StackPanel>
+
+        <ContentControl Grid.Row="2" Grid.Column="0" Content="{Binding Debugger.CurrentView, UpdateSourceTrigger=PropertyChanged}" Margin="5,0,5,0"/>
+
+        <GridSplitter Grid.Row="3" Grid.Column="0"
+              HorizontalAlignment="Stretch"
+              VerticalAlignment="Center"
+              Background="Black" 
+              ShowsPreview="True"
+              Height="5"
+              />
+
+        <DockPanel Grid.Row="4" Grid.Column="0" Margin="5,0,5,0">
+            <TextBlock DockPanel.Dock="Top" Text="Console:" Background="#333333" Foreground="White"/>
+            <TextBox DockPanel.Dock="Bottom" 
+                     Style="{StaticResource OrangeBorderTextBox}"
+                     VerticalScrollBarVisibility="Auto"
+                     FontFamily="Consolas"
+                     FontSize="{Binding Editor.Format.Size}"
+                     TextWrapping="Wrap"
+                     AcceptsReturn="True"
+                     AcceptsTab="True"
+                     Background="#25292C"
+                     Foreground="White"
+                     local:TextBoxExtension.OnTextChanged="True"
+                     IsReadOnly="True"
+                     Text="{Binding Debugger.Console.ConsoleText}"/>
+        </DockPanel>
+
+        <StackPanel Grid.Row="5" Grid.Column="0" Orientation="Horizontal" Margin="5,0,5,0">
+            <TextBlock Text="Input:" Foreground="White"/>
+            <TextBlock Text="WAITING FOR INPUT" Foreground="#FF9912" Visibility="{Binding Debugger.IsTaskWaitingForInput, Converter={StaticResource BoolToVisiblilityConverter}, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,0"/>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text=" (numeric)" Foreground="#FF9912" Visibility="{Binding Debugger.InputType, Converter={StaticResource NumericInputTypeToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock Grid.Column="0" Text=" (alphanumeric)" Foreground="#FF9912" Visibility="{Binding Debugger.InputType, Converter={StaticResource AlphanumericInputTypeToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+        </StackPanel>
+
+        <TextBox Grid.Row="6" Grid.Column="0" Text="{Binding Debugger.Console.InputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 local:FocusExtension.IsFocused="{Binding Debugger.IsTaskWaitingForInput, UpdateSourceTrigger=PropertyChanged}"
+                 Style="{StaticResource OrangeBorderTextBox}"
+                 Background="#25292C"
+                 Foreground="White"
+                 Margin="5,0,5,5">
+            <TextBox.InputBindings>
+                <KeyBinding Command="{Binding Debugger.SendInputCommand}" Key="Enter"/>
+            </TextBox.InputBindings>
+        </TextBox>
+
+        <TextBlock Grid.Row="7" Grid.Column="0"
+                   Text="{Binding File.Document.FileName}"
+                   Background="{Binding Debugger.IsDebuggingMode, Converter={StaticResource BottomBarColorConverter}}" 
+                   Foreground="White"
+                   Padding="10 0"/>
+        <!--#FF9912-->
+    </Grid>
+</Window>

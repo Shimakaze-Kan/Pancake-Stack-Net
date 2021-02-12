@@ -11,20 +11,48 @@ namespace PancakeStack_Compiler
     {
         static void Main(string[] args)
         {
-            string sourceFileName = args[0];
-            string outputFileName = args[1];
-            bool compilerFlag = false;
-            if(args.Length == 3 && args[2] == "-wait")
+            if(args.Length < 2)
             {
-                compilerFlag = true;
+                Console.WriteLine("Error: Not enough input arguments");
+                return;
             }
 
-            var sourceCode = File.ReadAllLines(sourceFileName);
+            string sourceFileName = args[0];
+            string outputFileName = args[1];
 
-            //sourceCode = sourceCode.Select(item => item.Trim());
+            string[] allCompilerFlags = new string[] { "-wait", "-nonewline" };
+            List<string> compilerFlags = new List<string>();
 
-            PSCompiler.Compile(outputFileName, outputFileName + ".exe", sourceCode, compilerFlag);
-            Console.WriteLine($"File: {sourceFileName} successfully compiled to {outputFileName}.exe");
+            //Check what flags have been passed
+            foreach (var flag in allCompilerFlags)
+            {
+                if(args.Any(item => item == flag))
+                {
+                    compilerFlags.Add(flag);
+                }
+            }
+
+            var sourceCode = File.ReadAllText(sourceFileName);
+
+            var validateCode = new ValidateSourceCode(sourceCode);
+
+            if(!validateCode.CheckIfCodeEndsWithEatAllOfThePancakesInstruction())
+            {
+                Console.WriteLine("The code must end with an \"Eat all of the pancakes!\" instruction");
+                return;
+            }
+
+            var validationResult = validateCode.ValidateInstructions();
+
+            if (validationResult.Item1)
+            {
+                PSCompiler.Compile(outputFileName, outputFileName + ".exe", validateCode.ValidSourceCode, compilerFlags);
+                Console.WriteLine($"File: {sourceFileName} successfully compiled to {outputFileName}.exe");
+            }
+            else
+            {
+                Console.WriteLine($"Error: Instruction on line {validateCode.MapRealLineNumbersWithRaw()[validationResult.Item2] + 1} cannot be found");
+            }
         }
     }
 }
