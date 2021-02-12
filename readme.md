@@ -24,10 +24,10 @@ From source:
 
 ## Screenshots of IDE
 ### Continuous debugging
-![Continuous debugging image](\Screenshots\1.png)
+![Continuous debugging image](Screenshots/1.png)
 
 ### Debugging step by step
-![Debugging step by step image](\Screenshots\2.gif)
+![Debugging step by step image](Screenshots/2.gif)
 
 ## Syntax
 The pancake stack starts out as empty.
