@@ -1,5 +1,6 @@
 [![MS-PL](https://img.shields.io/github/license/Shimakaze-Kan/Pancake-Stack-Net)](https://github.com/Shimakaze-Kan/Pancake-Stack-Net/blob/master/license)
 [![Version](https://img.shields.io/github/v/release/Shimakaze-Kan/Pancake-Stack-Net)](https://github.com/Shimakaze-Kan/Pancake-Stack-Net/releases)
+[![Wiki](https://img.shields.io/badge/wiki-%20exist-blueviolet)](https://github.com/Shimakaze-Kan/Pancake-Stack-Net/wiki)
 
 # Pancake Stack Net
 **Pancake Stack Net** is an integrated development environment for the [Pancake Stack](https://esolangs.org/wiki/Pancake_Stack) esoteric programming language.
@@ -74,7 +75,7 @@ The repository contains 3 source codes of example programs:
 - For .NET Framework 4.7.2
 
 ## How to Use
-To learn how to use the IDE and compiler, check out the repository wiki (work in progress).
+To learn how to use the IDE and compiler, check out the [repository wiki](https://github.com/Shimakaze-Kan/Pancake-Stack-Net/wiki).
 
 ## License
 This project is licensed under the [MS-PL License](https://opensource.org/licenses/MS-PL)
