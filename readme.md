@@ -1,5 +1,6 @@
 [![MS-PL](https://img.shields.io/github/license/Shimakaze-Kan/Pancake-Stack-Net)](https://github.com/Shimakaze-Kan/Pancake-Stack-Net/blob/master/license)
 [![Version](https://img.shields.io/github/v/release/Shimakaze-Kan/Pancake-Stack-Net)](https://github.com/Shimakaze-Kan/Pancake-Stack-Net/releases)
+[![Loc](https://tokei.rs/b1/github/Shimakaze-Kan/Pancake-Stack-Net?category=code)](https://github.com/Shimakaze-Kan/Pancake-Stack-Net)
 [![Wiki](https://img.shields.io/badge/wiki-%20exist-blueviolet)](https://github.com/Shimakaze-Kan/Pancake-Stack-Net/wiki)
 
 # Pancake Stack Net
