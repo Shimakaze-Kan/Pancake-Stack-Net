@@ -1,3 +1,4 @@
+![CI](https://github.com/Shimakaze-Kan/Pancake-Stack-Net/workflows/CI/badge.svg)
 [![MS-PL](https://img.shields.io/github/license/Shimakaze-Kan/Pancake-Stack-Net)](https://github.com/Shimakaze-Kan/Pancake-Stack-Net/blob/master/license)
 [![Version](https://img.shields.io/github/v/release/Shimakaze-Kan/Pancake-Stack-Net)](https://github.com/Shimakaze-Kan/Pancake-Stack-Net/releases)
 [![Loc](https://tokei.rs/b1/github/Shimakaze-Kan/Pancake-Stack-Net?category=code)](https://github.com/Shimakaze-Kan/Pancake-Stack-Net)
