@@ -31,7 +31,7 @@ namespace IDE.ViewModels.Tests
         {
             EditorViewModel editorViewModel = new EditorViewModel(new DocumentModel());
 
-            for (int i = 100; i >= 0; i++)
+            for (int i = 100; i >= 0; i--)
             {
                 editorViewModel.ZoomOutEditorCommand.Execute(null);
             }
