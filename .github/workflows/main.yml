@@ -38,5 +38,5 @@ jobs:
         run: msbuild PancakeStack_NET.sln /p:Configuration=Release
 
       - name: VSTest
-        run: vstest.exe IDE.Tests\bin\Release\IDE.Tests.dll
+        run: vstest.console.exe IDE.Tests\bin\Release\IDE.Tests.dll
         
