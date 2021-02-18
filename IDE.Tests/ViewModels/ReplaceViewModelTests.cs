@@ -68,6 +68,39 @@ namespace IDE.ViewModels.Tests
 
             Assert.AreEqual(expected, documentModel.Text);
         }
-    
+
+        [TestMethod()]
+        public void ReplaceText_ShouldBeAbleToExecute_WhenDocumentTextAndTextToReplaceAndReplacementAreNotNullOrEmpty()
+        {
+            DocumentModel documentModel = new DocumentModel();
+
+            documentModel.Text = "test";
+
+            ReplaceModel replaceModel = new ReplaceModel();
+
+            replaceModel.TextToReplace = "test";
+            replaceModel.TextAfterReplace = "test";
+            
+            ReplaceViewModel replaceViewModel = new ReplaceViewModel(replaceModel, documentModel);
+
+            Assert.IsTrue(replaceViewModel.ReplaceTextCommand.CanExecute(null));
+        }
+
+        [TestMethod()]
+        public void ReplaceText_ShouldNotBeAbleToExecute_WhenDocumentTextAndTextToReplaceAndReplacementAreNullOrEmpty()
+        {
+            DocumentModel documentModel = new DocumentModel();
+
+            documentModel.Text = string.Empty;
+
+            ReplaceModel replaceModel = new ReplaceModel();
+
+            replaceModel.TextToReplace = string.Empty;
+            replaceModel.TextAfterReplace = string.Empty;
+            
+            ReplaceViewModel replaceViewModel = new ReplaceViewModel(replaceModel, documentModel);
+
+            Assert.IsFalse(replaceViewModel.ReplaceTextCommand.CanExecute(null));
+        }
     }
 }

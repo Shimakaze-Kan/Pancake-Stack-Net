@@ -195,5 +195,54 @@ namespace IDE.Tests
 
             Assert.IsTrue(wasErrorMessageReceived);
         }
+
+        [TestMethod()]
+        public void ExecuteNext_ShouldFlipTwoElementsOnTheStack_WhenFlipThePancakesOnTopInstruction()
+        {
+            EmbeddedInterpreter embeddedInterpreter = new EmbeddedInterpreter(new string[] { "Put this X pancake on top!",
+                                                                                            "Put this Xy pancake on top!", 
+                                                                                            "Flip the pancakes on top!", 
+                                                                                            "Eat all of the pancakes!" });
+
+            embeddedInterpreter.ExecuteNext(new CancellationTokenSource().Token);
+            embeddedInterpreter.ExecuteNext(new CancellationTokenSource().Token);
+            var before = embeddedInterpreter.PancakeStack.ToArray();
+
+            embeddedInterpreter.ExecuteNext(new CancellationTokenSource().Token);
+            var result = embeddedInterpreter.PancakeStack.ToArray();
+
+            Assert.AreNotEqual(before, result);
+        }
+
+        [TestMethod()]
+        public void ExecuteNext_ShouldIncrementEveryElementOnTheStack_WhenPutSyrupOnThePancakesInstructionAndStackIsNotEmpty()
+        {
+            EmbeddedInterpreter embeddedInterpreter = new EmbeddedInterpreter(new string[] { "Put this X pancake on top!",
+                                                                                            "Put this Xy pancake on top!",
+                                                                                            "Put syrup on the pancakes!",
+                                                                                            "Eat all of the pancakes!" });
+
+            embeddedInterpreter.ExecuteNext(new CancellationTokenSource().Token);
+            embeddedInterpreter.ExecuteNext(new CancellationTokenSource().Token);
+            var before = embeddedInterpreter.PancakeStack;
+            var expected = before.Select(x => x + 1).ToArray();
+
+            embeddedInterpreter.ExecuteNext(new CancellationTokenSource().Token);
+            var result = embeddedInterpreter.PancakeStack.ToArray();
+
+            Assert.IsTrue(expected.SequenceEqual(result));
+        }
+
+        [TestMethod()]
+        public void ExecuteNext_ShouldIgnoreInstruction_WhenPutSyrupOnThePancakesInstructionAndStackIsEmpty()
+        {
+            EmbeddedInterpreter embeddedInterpreter = new EmbeddedInterpreter(new string[] { "Put syrup on the pancakes!",
+                                                                                            "Eat all of the pancakes!" });
+
+            embeddedInterpreter.ExecuteNext(new CancellationTokenSource().Token);
+            var result = embeddedInterpreter.PancakeStack;
+
+            Assert.IsTrue(!result.Any());
+        }
     }
 }
