@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PancakeStack_Interpreter", "PancakeStack_Interpreter\PancakeStack_Interpreter.csproj", "{38DDE444-1099-4A71-AB8A-120388A03D61}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PancakeStack_Compiler", "PancakeStack_Compiler\PancakeStack_Compiler.csproj", "{CCF9CE3E-8597-4A2D-BC56-0D12267DE0B1}"
 EndProject
 Global
@@ -13,10 +11,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{38DDE444-1099-4A71-AB8A-120388A03D61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{38DDE444-1099-4A71-AB8A-120388A03D61}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{38DDE444-1099-4A71-AB8A-120388A03D61}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{38DDE444-1099-4A71-AB8A-120388A03D61}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CCF9CE3E-8597-4A2D-BC56-0D12267DE0B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CCF9CE3E-8597-4A2D-BC56-0D12267DE0B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CCF9CE3E-8597-4A2D-BC56-0D12267DE0B1}.Release|Any CPU.ActiveCfg = Release|Any CPU

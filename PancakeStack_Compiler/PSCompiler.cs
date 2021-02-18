@@ -14,10 +14,10 @@ namespace PancakeStack_Compiler
         private static FieldBuilder accumulator1; //Internal accumulator used for conditional instructions
         private static FieldBuilder accumulator2; //Internal accumulator used for conditional instructions
         private static FieldBuilder numInFirst; //Checks if there is an instruction that takes input
-        private static FieldBuilder swapPancakeStack; //A temporary stack of pancakes used to make a copy of the original stack
         private static FieldBuilder instructionList; //List of actions
         private static FieldBuilder programInstructionIterator; //Internal variable used to navigate the action list
         private static FieldBuilder labelDictionary; //Dictionary used to record labels and their corresponding addresses
+        private static FieldBuilder tmpArr; //Temporary array used to flip stack
 
         private static Dictionary<string, MethodBuilder> methodDictionary = new Dictionary<string, MethodBuilder>();
 
@@ -36,10 +36,10 @@ namespace PancakeStack_Compiler
             accumulator1 = type.DefineField("accumulator1", typeof(int), FieldAttributes.Static | FieldAttributes.Private);
             accumulator2 = type.DefineField("accumulator2", typeof(int), FieldAttributes.Static | FieldAttributes.Private);
             numInFirst = type.DefineField("numInFirst", typeof(bool), FieldAttributes.Static | FieldAttributes.Private);
-            swapPancakeStack = type.DefineField("swapPancakeStack", typeof(Stack<int>), FieldAttributes.Static | FieldAttributes.Private);
             instructionList = type.DefineField("instructionList", typeof(List<Action>), FieldAttributes.Static | FieldAttributes.Private);
             programInstructionIterator = type.DefineField("programInstructionIterator", typeof(int), FieldAttributes.Static | FieldAttributes.Private);
             labelDictionary = type.DefineField("labelDictionary", typeof(Dictionary<string,int>), FieldAttributes.Static | FieldAttributes.Private);
+            tmpArr = type.DefineField("tmpArr", typeof(int[]), FieldAttributes.Static | FieldAttributes.Private);
 
             var pancakeStackField = type.DefineField("pancakeStack", typeof(Stack<int>), FieldAttributes.Static | FieldAttributes.Private);
             var constructor = type.DefineConstructor(MethodAttributes.Static, CallingConventions.Standard, null); //static constructor parameterless
@@ -527,34 +527,68 @@ namespace PancakeStack_Compiler
 
             var ilGen = method.GetILGenerator();
 
-            ilGen.Emit(OpCodes.Newobj, typeof(Stack<int>).GetConstructor(Type.EmptyTypes)); //temporary stack
-            ilGen.Emit(OpCodes.Stsfld, swapPancakeStack);
-
-            var loopConditionsLabel = ilGen.DefineLabel();
-            var loopStartLabel = ilGen.DefineLabel();
-
-            ilGen.Emit(OpCodes.Br_S, loopConditionsLabel);
-
-            ilGen.MarkLabel(loopStartLabel);
-            ilGen.Emit(OpCodes.Ldsfld, swapPancakeStack);
-            ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
-            ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("Pop"));
-
-            ilGen.Emit(OpCodes.Ldc_I4_1);
-            ilGen.Emit(OpCodes.Add);
-            ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("Push")); //stack2.Push(stack1.Pop() + 1)
-
-            ilGen.MarkLabel(loopConditionsLabel);
+            var firstLoopConditionLabel = ilGen.DefineLabel();
+            var firstLoopStartLabel = ilGen.DefineLabel();  
+            var secondLoopConditionLabel = ilGen.DefineLabel();
+            var secondLoopStartLabel = ilGen.DefineLabel();             
+            
             ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
             ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("get_Count"));
-            ilGen.Emit(OpCodes.Ldc_I4_0);
-            ilGen.Emit(OpCodes.Cgt);
-            ilGen.Emit(OpCodes.Stsfld, accumulator1);
-            ilGen.Emit(OpCodes.Ldsfld, accumulator1);
-            ilGen.Emit(OpCodes.Brtrue_S, loopStartLabel);           
+            ilGen.Emit(OpCodes.Newarr, typeof(int));
+            ilGen.Emit(OpCodes.Stsfld, tmpArr);
+            ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
+            ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("get_Count"));
 
-            ilGen.Emit(OpCodes.Ldsfld, swapPancakeStack);
-            ilGen.Emit(OpCodes.Stsfld, pancakeStack);
+            //first loop
+            ilGen.Emit(OpCodes.Ldc_I4_1);
+            ilGen.Emit(OpCodes.Sub);
+            ilGen.Emit(OpCodes.Stsfld, accumulator1);
+            ilGen.Emit(OpCodes.Br, firstLoopConditionLabel);
+
+            ilGen.MarkLabel(firstLoopStartLabel);
+            ilGen.Emit(OpCodes.Ldsfld, tmpArr);
+            ilGen.Emit(OpCodes.Ldsfld, accumulator1);
+            ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
+            ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("Pop"));
+            ilGen.Emit(OpCodes.Ldc_I4_1);
+            ilGen.Emit(OpCodes.Add);
+            ilGen.Emit(OpCodes.Stelem_I4);
+            ilGen.Emit(OpCodes.Ldsfld, accumulator1);
+            ilGen.Emit(OpCodes.Ldc_I4_1);
+            ilGen.Emit(OpCodes.Sub);
+            ilGen.Emit(OpCodes.Stsfld, accumulator1);
+
+            ilGen.MarkLabel(firstLoopConditionLabel);
+            ilGen.Emit(OpCodes.Ldsfld, accumulator1);
+            ilGen.Emit(OpCodes.Ldc_I4_0);
+            ilGen.Emit(OpCodes.Clt);
+            ilGen.Emit(OpCodes.Ldc_I4_0);
+            ilGen.Emit(OpCodes.Ceq);
+            ilGen.Emit(OpCodes.Brtrue_S, firstLoopStartLabel);
+
+            //second loop
+            ilGen.Emit(OpCodes.Ldc_I4_0);
+            ilGen.Emit(OpCodes.Stsfld, accumulator1);
+            ilGen.Emit(OpCodes.Br, secondLoopConditionLabel);
+
+            ilGen.MarkLabel(secondLoopStartLabel);
+            ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
+            ilGen.Emit(OpCodes.Ldsfld, tmpArr);
+            ilGen.Emit(OpCodes.Ldsfld, accumulator1);
+            ilGen.Emit(OpCodes.Ldelem_I4);
+            ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("Push"));
+            ilGen.Emit(OpCodes.Ldsfld, accumulator1);
+            ilGen.Emit(OpCodes.Ldc_I4_1);
+            ilGen.Emit(OpCodes.Add);
+            ilGen.Emit(OpCodes.Stsfld, accumulator1);
+
+            ilGen.MarkLabel(secondLoopConditionLabel);
+            ilGen.Emit(OpCodes.Ldsfld, accumulator1);
+            ilGen.Emit(OpCodes.Ldsfld, tmpArr);
+            ilGen.Emit(OpCodes.Ldlen);
+            ilGen.Emit(OpCodes.Conv_I4);
+            ilGen.Emit(OpCodes.Clt);
+            ilGen.Emit(OpCodes.Brtrue, secondLoopStartLabel);
 
             ilGen.Emit(OpCodes.Ret);
         }
@@ -584,34 +618,68 @@ namespace PancakeStack_Compiler
 
             var ilGen = method.GetILGenerator();
 
-            ilGen.Emit(OpCodes.Newobj, typeof(Stack<int>).GetConstructor(Type.EmptyTypes)); //temporary stack
-            ilGen.Emit(OpCodes.Stsfld, swapPancakeStack);
+            var firstLoopConditionLabel = ilGen.DefineLabel();
+            var firstLoopStartLabel = ilGen.DefineLabel();
+            var secondLoopConditionLabel = ilGen.DefineLabel();
+            var secondLoopStartLabel = ilGen.DefineLabel();
 
-            var loopConditionsLabel = ilGen.DefineLabel();
-            var loopStartLabel = ilGen.DefineLabel();
-
-            ilGen.Emit(OpCodes.Br_S, loopConditionsLabel);
-
-            ilGen.MarkLabel(loopStartLabel);
-            ilGen.Emit(OpCodes.Ldsfld, swapPancakeStack);
-            ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
-            ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("Pop"));
-
-            ilGen.Emit(OpCodes.Ldc_I4_1);
-            ilGen.Emit(OpCodes.Sub);
-            ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("Push")); //stack2.Push(stack1.Pop() - 1)
-
-            ilGen.MarkLabel(loopConditionsLabel);
             ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
             ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("get_Count"));
-            ilGen.Emit(OpCodes.Ldc_I4_0);
-            ilGen.Emit(OpCodes.Cgt);
-            ilGen.Emit(OpCodes.Stsfld, accumulator1);
-            ilGen.Emit(OpCodes.Ldsfld, accumulator1);
-            ilGen.Emit(OpCodes.Brtrue_S, loopStartLabel);
+            ilGen.Emit(OpCodes.Newarr, typeof(int));
+            ilGen.Emit(OpCodes.Stsfld, tmpArr);
+            ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
+            ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("get_Count"));
 
-            ilGen.Emit(OpCodes.Ldsfld, swapPancakeStack);
-            ilGen.Emit(OpCodes.Stsfld, pancakeStack);
+            //first loop
+            ilGen.Emit(OpCodes.Ldc_I4_1);
+            ilGen.Emit(OpCodes.Sub);
+            ilGen.Emit(OpCodes.Stsfld, accumulator1);
+            ilGen.Emit(OpCodes.Br, firstLoopConditionLabel);
+
+            ilGen.MarkLabel(firstLoopStartLabel);
+            ilGen.Emit(OpCodes.Ldsfld, tmpArr);
+            ilGen.Emit(OpCodes.Ldsfld, accumulator1);
+            ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
+            ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("Pop"));
+            ilGen.Emit(OpCodes.Ldc_I4_1);
+            ilGen.Emit(OpCodes.Sub);
+            ilGen.Emit(OpCodes.Stelem_I4);
+            ilGen.Emit(OpCodes.Ldsfld, accumulator1);
+            ilGen.Emit(OpCodes.Ldc_I4_1);
+            ilGen.Emit(OpCodes.Sub);
+            ilGen.Emit(OpCodes.Stsfld, accumulator1);
+
+            ilGen.MarkLabel(firstLoopConditionLabel);
+            ilGen.Emit(OpCodes.Ldsfld, accumulator1);
+            ilGen.Emit(OpCodes.Ldc_I4_0);
+            ilGen.Emit(OpCodes.Clt);
+            ilGen.Emit(OpCodes.Ldc_I4_0);
+            ilGen.Emit(OpCodes.Ceq);
+            ilGen.Emit(OpCodes.Brtrue_S, firstLoopStartLabel);
+
+            //second loop
+            ilGen.Emit(OpCodes.Ldc_I4_0);
+            ilGen.Emit(OpCodes.Stsfld, accumulator1);
+            ilGen.Emit(OpCodes.Br, secondLoopConditionLabel);
+
+            ilGen.MarkLabel(secondLoopStartLabel);
+            ilGen.Emit(OpCodes.Ldsfld, pancakeStack);
+            ilGen.Emit(OpCodes.Ldsfld, tmpArr);
+            ilGen.Emit(OpCodes.Ldsfld, accumulator1);
+            ilGen.Emit(OpCodes.Ldelem_I4);
+            ilGen.Emit(OpCodes.Callvirt, typeof(Stack<int>).GetMethod("Push"));
+            ilGen.Emit(OpCodes.Ldsfld, accumulator1);
+            ilGen.Emit(OpCodes.Ldc_I4_1);
+            ilGen.Emit(OpCodes.Add);
+            ilGen.Emit(OpCodes.Stsfld, accumulator1);
+
+            ilGen.MarkLabel(secondLoopConditionLabel);
+            ilGen.Emit(OpCodes.Ldsfld, accumulator1);
+            ilGen.Emit(OpCodes.Ldsfld, tmpArr);
+            ilGen.Emit(OpCodes.Ldlen);
+            ilGen.Emit(OpCodes.Conv_I4);
+            ilGen.Emit(OpCodes.Clt);
+            ilGen.Emit(OpCodes.Brtrue, secondLoopStartLabel);
 
             ilGen.Emit(OpCodes.Ret);
         }
