@@ -79,5 +79,9 @@ The repository contains 3 source codes of example programs:
 ## How to Use
 To learn how to use the IDE and compiler, check out the [repository wiki](https://github.com/Shimakaze-Kan/Pancake-Stack-Net/wiki).
 
+## Tests
+Github workflow is configured to run unit tests on every push and pull request to master branch<br>Current IDE test coverage: **70,36%**
+
+
 ## License
 This project is licensed under the [MS-PL License](https://opensource.org/licenses/MS-PL)
