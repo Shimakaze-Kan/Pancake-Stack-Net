@@ -190,7 +190,7 @@ namespace IDE
                         break;
                     }
                 case "Put syrup on the pancakes!":
-                    PancakeStack = new Stack<int>(PancakeStack.Select(item => item + 1));
+                    PancakeStack = new Stack<int>(PancakeStack.Select(item => item + 1).Reverse());
                     break;
                 case "Put butter on the pancakes!":
                     {
@@ -202,7 +202,7 @@ namespace IDE
                         break;
                     }
                 case "Take off the syrup!":
-                    PancakeStack = new Stack<int>(PancakeStack.Select(item => item - 1));
+                    PancakeStack = new Stack<int>(PancakeStack.Select(item => item - 1).Reverse());
                     break;
                 case "Take off the butter!":
                     {
